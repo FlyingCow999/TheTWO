@@ -1,0 +1,247 @@
+﻿
+@{
+    ViewData["Title"] = "addd";
+}
+<link href="~/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
+<script src="~/layui-v2.5.6/layui/layui.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<h3>下订单(询价单转订单)</h3>
+<input type="hidden" id="hide" value="" />
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+            <th style="background-color:teal">欢迎下单</th>
+            <td>订单号：</td>
+            <td><label id="ddh"></label></td>
+            <td>当前状态：</td>
+            <td><label id="dqzt"></label></td>
+        </tr>
+
+
+        <tr>
+            <td style="background-color:teal">运输地址</td>
+            <th>始发地</th>
+            <td><label id="sfd"></label></td>
+            <th>目的地</th>
+            <td><label id="mdd"></label></td>
+        </tr>
+
+
+
+        <tr>
+            <th style="background-color:teal">计划时间</th>
+            <th>计划发车时间</th>
+            <td><label id="fcsj"></label></td>
+            <th>计划到达时间</th>
+            <td><label id="ddsj"></label></td>
+        </tr>
+
+
+        <tr>
+            <th style="background-color:teal"> 委托人信息</th>
+
+        </tr>
+
+        <tr>
+            <th> 委托方</th>
+            <th> 委托人</th>
+            <th> 联系电话</th>
+            <th> 提货地址</th>
+            <th> 提货联系人</th>
+        </tr>
+        <tr>
+            <td><input type="text" id="wtf" /></td>
+            <td><input type="text" id="wtr" /></td>
+            <td><input type="text" id="lxdh" /></td>
+            <td><input type="text" id="thdz" /></td>
+            <td><input type="text" id="thlxr" /></td>
+        </tr>
+
+
+        <tr>
+            <th style="background-color:teal">收货人信息</th>
+        </tr>
+
+        <tr>
+            <th> 收货方</th>
+            <th> 收货人</th>
+            <th> 联系电话</th>
+            <th> 收货地址</th>
+            <th> 联系电话</th>
+        </tr>
+        <tr>
+            <td><input type="text" id="shf" /></td>
+            <td><input type="text" id="shr" /></td>
+            <td><input type="text" id="lxdhh" /></td>
+            <td><input type="text" id="shdz" /></td>
+            <td><input type="text" id="lxxdh" /></td>
+
+        </tr>
+
+
+        <tr>
+            <th style="background-color:teal">货物信息</th>
+        </tr>
+        <tr>
+            <th>货名</th>
+            <th>规格型号</th>
+            <th>总包装</th>
+            <th>总数量</th>
+            <th>总重量</th>
+        </tr>
+        <tr>
+            <td><label id="hm"></label></td>
+            <td><label id="ggxh"></label></td>
+            <td><label id="zbz"></label></td>
+            <td><label id="zsl"></label></td>
+            <td><label id="zzl"></label></td>
+        </tr>
+
+        <tr>
+            <th style="background-color:teal">运费统计</th>
+        </tr>
+
+        <tr>
+            <th>单价</th>
+            <th>运输费</th>
+            <th>其他费用</th>
+            <th>费用总计</th>
+            <th>订单备注</th>
+        </tr>
+        <tr>
+            <td><label id="jg"></label></td>
+            <td><label id="ysf"></label></td>
+            <td><label id="qtfy"></label></td>
+            <td><label id="fyzj"></label></td>
+            <td><label id="bz"></label></td>
+        </tr>
+
+    </thead>
+    <tbody id="tb">
+    </tbody>
+</table>
+<td> <input type="button" class="layui-btn" value="下单" onclick="xd()" />
+<input type="button" class="layui-btn" value="取消" onclick="qx()" /> </td>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<script>
+    var id = this.location.search.split("=")[1];
+    $(function () {
+        FTtt();
+    });
+    //反填
+    function FTtt() {
+        $.ajax(
+            {
+                url: 'http://localhost:57030/api/_Inquiry/FT?id=' + id,
+                type: 'get',
+                dataType: 'json',
+                success: function (d) {
+
+                    $("#ddh").text(d[0].if_Number);
+                    if (d[0].if_State == 0 || d[0].if_State == 1 || d[0].if_State == 2 || d[0].if_State == 3) {
+                        $("#dqzt").text("待报价");
+                    }
+                    if (d[0].if_State == 5) {
+                        $("#dqzt").text("已拒绝");
+                    }
+                    if (d[0].if_State == 4) {
+                        $("#dqzt").text("已报价");
+                    }
+                    $("#sfd").text(d[0].if_BeginPlace);
+                    $("#mdd").text(d[0].if_EndPlace);
+                    $("#fcsj").text(d[0].if_PlanBCarTime);
+                    $("#ddsj").text(d[0].if_PlanArrivalTime);
+                    $("#hm").text(d[0].if_Goods);
+                    $("#zzl").text(d[0].if_AllWeight);
+                    $("#jg").text(d[0].o_Price);
+                    $("#ysf").text(d[0].o_Freight);
+                    $("#qtfy").text(d[0].o_Other + d[0].cp_ElseCost);
+                    $("#fyzj").text(d[0].cp_Aggregate);
+                    $("#hide").val(d[0].o_Id)
+                    $("#ggxh").text(d[0].if_Specification);
+                    $("#zbz").text(d[0].if_TotalPackage);
+                    $("#zsl").text(d[0].if_Num);
+                    $("#bz").text(d[0].if_Remark);
+                }
+            }
+        )
+    }
+    function xd() {
+        var obj = {};
+        obj.e_Company = $("#wtf").val();
+        obj.e_Person = $("#wtr").val();
+        obj.e_Phone = $("#lxdh").val();
+        obj.e_Address = $("#thdz").val();
+        obj.e_AddPerson = $("#thlxr").val();
+        obj.e_AddPhone = $("#lxxdh").val();
+        obj.ifid = parseInt(id);
+        $.ajax(
+            {
+                url: 'http://localhost:57030/api/_Inquiry/add',
+                data: JSON.stringify(obj),
+                contentType: 'application/json',
+                type: 'post',
+                dataType: 'json',
+                success: function (d) {
+                    if (d > 0) {
+                        alert('添加成功');
+                        location.href = '/_Inquiry/ddxs';
+                        xd2();
+                        function xd2() {
+                            var obj = {};
+                            obj.co_Company = $("#shf").val();
+                            obj.co_Person = $("#shr").val();
+                            obj.co_Phone = $("#lxdhh").val();
+                            obj.co_Address = $("#shdz").val();
+                            obj.co_State = parseInt(0);
+                            $.ajax(
+                                {
+                                    url: 'http://localhost:57030/api/_Inquiry/add1',
+                                    type: 'post',
+                                    data: JSON.stringify(obj),
+                                    contentType: 'application/json',
+                                    dataType: 'json',
+                                    success: function (d) {
+                                        if (d > 0) {
+                                            alert('添加成功');
+                                            location.href = '/Inquiry/ddxs';
+                                            xd3();
+                                            function xd3() {
+                                                var obj = {};
+                                                obj.o_Id = $("#hide").val();
+                                                obj.orderid = $("#ddh").val();
+                                                obj.dis_State = parseInt(0);
+                                                $.ajax(
+                                                    {
+
+                                                    });
+
+                                            }
+                                        }
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+    function qx() {
+        location.href = '/_Inquiry/Index';
+    }
+</script>
+
+
+
+
+

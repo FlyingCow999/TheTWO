@@ -1,0 +1,282 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+<h2>订单管理 询价单</h2>
+<script src="~/layui-v2.5.6/layui/layui.js"></script>
+<link href="~/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.3.1.js"></script>
+
+<div class="demoTable">
+    始发地：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" placeholder="始发地" id="demoReload" autocomplete="off">
+    </div>
+    目的地：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" placeholder="目的地" id="EndReload" autocomplete="off">
+    </div>
+    货名：
+    <div class="layui-inline">
+        <input class="layui-input" name="id" placeholder="货名" id="hm" autocomplete="off">
+    </div>
+    状态:
+    <div class="layui-inline">
+        <select id="xl">
+            <option value="-1">全部</option>
+            <option value="0">待报价</option>
+            <option value="5">已拒绝</option>
+            <option value="4">已报价</option>
+        </select>
+    </div>
+    <button class="layui-btn" id="reold" data-type="reload">搜索</button>
+    <div style="float:right">
+        <a class="btn btn-info" data-toggle="modal" data-target="#addClass"><i class="fa fa-address-book">&nbsp;</i>创建询价单</a>
+    </div>
+    <!-- 添加班级模态窗 -->
+    <div class="modal fade" id="addClass" tabindex="-1" role="dialog" aria-labelledby="XXX"
+         style="position: absolute;top: 0;left: 0;">
+        <div class="modal-dialog" role="document" style="float:left">
+            <div class="modal-content" style="width:1035px;height:560px">
+                <form action="." method="post" class="form-horizontal">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title"></h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div style="width:500px;height:400px;float:left" class="border alert-secondary">
+                            <div class="form-group">
+                                <div>
+                                    <label class="col-sm-3 control-label" for="classname">计划发车时间</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input id="jhfcsj" class="form-control" type="datetime-local" placeholder="请输入计划发车时间">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label " for="classname">目的地</label>
+                                <div class="col-sm-6">
+                                    <input id="mdd" class="form-control" type="text" placeholder="请输入目的地">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">始发地</label>
+                                <div class="col-sm-6">
+                                    <input id="sfd" class="form-control" type="text" placeholder="请输入始发地">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">规格型号</label>
+                                <div class="col-sm-6">
+                                    <input id="ggxh" class="form-control" type="text" placeholder="请输入始发地">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">总包装</label>
+                                <div class="col-sm-6">
+                                    <input id="zbz" class="form-control" type="text" placeholder="请输入始发地">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width:500px;height:400px;float:right" class="border alert-secondary">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">计划到达时间</label>
+                                <div class="col-sm-6">
+                                    <input id="jhddsj" class="form-control" type="datetime-local" placeholder="请输入计划到达时间">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">货名</label>
+                                <div class="col-sm-6">
+                                    <input id="hwmc" class="form-control" type="text" placeholder="请输入货名">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">重量</label>
+                                <div class="col-sm-6">
+                                    <input id="zl" class="form-control" type="text" placeholder="请输入重量">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">备注</label>
+                                <div class="col-sm-6">
+                                    <input id="bz" class="form-control" type="text" placeholder="请输入备注">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label" for="classname">总数量</label>
+                                <div class="col-sm-6">
+                                    <input id="zsl" class="form-control" type="text" placeholder="请输入始发地">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addddd();">
+                            提交
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm layui-btn-normal" lay-event="del">下订单</a>
+</script>
+
+<script type="text" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+    </div>
+</script>
+
+<table class="layui-hide" lay-filter="test" id="test"></table>
+<script>
+    layui.use('table', function () {
+        var table = layui.table;
+        table.render({
+            elem: '#test'
+            , url: 'http://localhost:57030/api/_Inquiry/Getlist'
+            , toolbar: '#toolbarDemo'//打印 导出
+            , cols: [[
+                { type: 'checkbox' }
+                , { field: 'if_Id', title: 'ID', sort: true }
+                , { field: 'if_Number', title: '询价号' }
+                , { field: 'if_OrderTime', title: '下单时间' }
+                , { field: 'if_PlanBCarTime', title: '计划发车时间' }
+                , { field: 'if_PlanArrivalTime', title: '计划到达时间' }
+                , { field: 'if_BeginPlace', title: '始发地' }
+                , { field: 'if_EndPlace', title: '目的地' }
+                , { field: 'if_Goods', title: '货名' }
+                , { field: 'if_AllWeight', title: '总重量' }
+                , {
+                    field: 'if_State', title: '状态', width: 85, unresize: true, templet: function (d) {
+                        if (d.if_State == 0 || d.if_State == 1 || d.if_State == 2 || d.if_State == 3) {
+                            return '<span style="color: #33FF66;">待报价</span>';
+                        }
+                        if (d.if_State == 5) {
+                            return '<span style="color: #00FFFF;">已拒绝</span>';
+                        }
+                        if (d.if_State == 4) {
+                            return '<span style="color: #CC0000;">已报价</span>';
+                        }
+                    }
+                }
+                , { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150 }
+            ]]
+            , id: "reloadpp"
+            , page: true
+            , limit: 5
+            , limits: ['20', '30']
+        });
+        $("#reold").on('click', function () {
+            //执行重载 查询状态
+            table.reload('reloadpp', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where:
+                {
+                    Sfd: $("#demoReload").val(),
+                    Md: $("#EndReload").val(),
+                    state: $("#xl").val(),
+                    Goods: $("#hm").val(),
+                }
+            }, 'data');
+        }
+        );
+        //根据状态决定是不是跳转监听行工具事件
+        table.on('tool(test)', function (obj) {
+
+            var data = obj.data;
+            if (obj.event == 'del' && obj.data.if_State == 4) {
+                layer.confirm('确认跳转吗', function (index) {
+                    location.href = '/_Inquiry/addd?id=' + data.if_Id;
+                });
+            }
+            else {
+                alert('对不起 您的询价单还未报价')
+            }
+        });
+
+        //复选框头工具栏事件
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id); //获取选中行状态
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;  //获取选中行数据
+                    layer.alert(JSON.stringify(data));
+                    break;
+            };
+        });
+    })
+    //系统自动生成现在时间
+    function hqsj() {
+        var hqsj = new Date();
+        var h = hqsj.getFullYear();
+        var m = hqsj.getMonth() + 1;
+        var d = hqsj.getDate();
+        return h + '-' + m + '-' + d;
+    }
+    //添加
+    function addddd() {
+        var obj = {};
+        obj.if_Number = '';
+        obj.if_OrderTime = new Date();
+        obj.if_BeginPlace = $("#sfd").val();
+        obj.if_PlanBCarTime = $("#jhfcsj").val();
+        obj.if_PlanArrivalTime = $("#jhddsj").val();
+        obj.if_EndPlace = $("#mdd").val();
+        obj.if_Goods = $("#hwmc").val();
+        obj.if_AllWeight = $("#zl").val();
+        obj.if_Remark = $("#bz").val();
+        obj.if_Specification = $("#ggxh").val();
+        obj.if_TotalPackage = $("#zbz").val();
+        obj.if_Num = parseInt($("#zsl").val());
+        obj.if_State = parseInt(0);
+
+        $.ajax(
+            {
+                url: 'http://localhost:57030/api/_Inquiry/aff',
+                data: JSON.stringify(obj),
+                type: 'post',
+                dataType: 'json',
+                contentType: 'application/json',
+                success: function (data) {
+                    if (data > 0) {
+                        alert('添加成功');
+                    }
+                }
+            }
+        )
+    }
+</script>
+<table class="layui-hide" lay-filter="test" id="test"></table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+

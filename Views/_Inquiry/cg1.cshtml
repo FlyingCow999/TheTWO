@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewData["Title"] = "cg1";
+}
+<link href="~/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
+<script src="~/layui-v2.5.6/layui/layui.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<div id="app">
+    <div id="div1">
+        <div id="div2"></div>
+        <span id="h3_1"><b>回单管理</b></span>
+    </div>
+    <div id="div1">
+        <hr />
+        <label>数据列表</label>
+        <div style="float:right">
+            <button v-on:click="Add" class="layui-btn">回单确认</button>
+        </div>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td><input type="checkbox" class="rd" /></td>
+                    <td>订单号</td>
+                    <td>下单时间</td>
+                    <td>收货方</td>
+                    <td>收货人</td>
+                    <td>始发地</td>
+                    <td>目的地</td>
+                    <td>货物</td>
+                    <td>重量</td>
+                    <td>确认状态</td>
+                </tr>
+            </thead>
+
+            <tbody v-for="(row,index) in info">
+                <tr v-if="index>=(curpage-1)*pagesize&&index<curpage*pagesize">
+                    <td><input type="checkbox" class="rd" :value="row.if_Id" /></td>
+                    <td>{{row.if_Number}}</td>
+                    <td>{{row.if_OrderTime}}</td>
+                    <td>{{row.co_Company}}</td>
+                    <td>{{row.co_Person}}</td>
+                    <td>{{row.if_BeginPlace }}</td>
+                    <td>{{row.if_EndPlace}}</td>
+                    <td>{{row.if_Goods}}</td>
+                    <td>{{row.if_AllWeight}}</td>
+                    <td>{{row.a_State==0?"待确认":"已确认"}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="nav1" style="float:left">
+            <ul class="pagination pagination-lg">
+                <template v-for="page in Math.ceil(info.length/pagesize)">
+                    <li v-on:click="PrePage()" id="prepage" v-if="page==1" class="disabled"><input type="button" value="上一页" class="layui-btn" /></li>
+                    <li v-if="page==1" id="prepage1" class="active" v-on:click="NumPage(page)"><input type="button"  class="layui-btn" /></li>
+                    <li id="prepage2" v-else v-on:click="NumPage(page)"><input type="button"  class="layui-btn" /></li>
+                    <li id="nextpage" v-on:click="NextPage()" v-if="page==Math.ceil(info.length/pagesize)"><input type="button" value="下一页" class="layui-btn" /></li>
+                </template>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    var vue = new Vue({
+        el: '#app',
+        data() {
+            return {
+                //显示
+                info: [],
+                //分页
+                pagesize: 4,
+                curpage: 1,//当前页的页码
+            }
+        },
+        mounted: function () {
+            //显示主体
+            this.Show();
+        },
+        methods:
+        {
+            //显示主体
+            Show: function () {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/_Inquiry/HD",
+                }).then((res => (this.info = res.data)))
+            },
+            //选中一行跳转
+
+            Add: function () {
+                let ids = $(".rd:checked").val();
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/_Inquiry/HD?id=" + ids,
+                }).then((res => {
+
+                    if (res.data[0].a_State == 0) {
+                        window.location.href = '/_Inquiry/CKAdd?id=' + ids;
+                    }
+                    else {
+                        alert('已确认了')
+                    }
+                }
+                ))
+            },
+            //上一页方法
+            PrePage() {
+                if (this.curpage == 1) {
+                    return
+                }
+                this.curpage = this.curpage - 1
+            },
+            ////下一页方法
+            NextPage() {
+                if (this.curpage == Math.ceil(this.info.length / this.pagesize)) {
+                    return
+                }
+                this.curpage = this.curpage + 1
+            },
+            //点击页码的方法a
+            NumPage: function (num) {
+                if (this.curpage == num) {
+                    return;
+                }
+                this.curpage = num;
+            }
+
+        }
+    });
+</script>
