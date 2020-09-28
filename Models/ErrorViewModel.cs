@@ -1,5 +1,4 @@
 using System;
-
 namespace Flying_Cow_TMSMVC.Models
 {
     public class ErrorViewModel
