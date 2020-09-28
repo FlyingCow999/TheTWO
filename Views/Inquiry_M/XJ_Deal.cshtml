@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewData["Title"] = "XJ_Deal";
+}
+<script src="~/js/axios.min.js"></script>
+<script src="~/js/vue.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/bootstrap.min.js"></script>
+<h2>询价单管理-询价单报价</h2>
+<div id="BJ">
+    <div v-for="info in infos">
+        <div>
+            订单号 <span style="color:red">*</span> {{info.if_Number}}
+        </div>
+        <hr />
+        <h2>运输地址</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>始发地</td>
+                <td>目的地</td>
+            </tr>
+            <tr>
+                <td>{{info.if_BeginPlace}}</td>
+                <td>{{info.if_EndPlace}}</td>
+            </tr>
+        </table>
+        <h2>计划时间</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>计划装货时间</td>
+                <td>计划到货时间</td>
+            </tr>
+            <tr>
+                <td>{{info.if_PlanBCarTime}}</td>
+                <td>{{info.if_PlanArrivalTime}}</td>
+            </tr>
+        </table>
+        <h2>货物信息</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>货名</td>
+                <td>规格型号</td>
+                <td>总包装</td>
+                <td>总数量</td>
+                <td>总重量kg</td>
+            </tr>
+            <tr>
+                <td>{{info.if_Goods}}</td>
+                <td>{{info.if_Specification}}</td>
+                <td>{{info.if_TotalPackage}}</td>
+                <td>{{info.if_Num}}</td>
+                <td>{{info.if_AllWeight}}</td>
+            </tr>
+        </table>
+        <h2>备注</h2>
+        <textarea readonly="readonly" style="width:1125px;height:40px;text-align:inherit">{{info.if_Remark}}</textarea>
+        <h2>运输询价</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>
+                    <input :value="info.if_BeginPlace" type="text" readonly="readonly" />
+                    <span style="font-weight:bold">---------></span>
+                    <input :value="info.if_EndPlace" type="text" readonly="readonly" />
+                </td>
+            </tr>
+        </table>
+        <hr />
+        <table class="table table-bordered">
+            <tr>
+                <td>
+                </td>
+
+            </tr>
+            <tr><td></td></tr>
+        </table>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            选择司机报价
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">选择司机报价</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div>
+                        车牌号：<input type="text" v-model="txt_No" />
+                        司机姓名：<input type="text" v-model="txt_Name" />
+                        发站：<input type="text" v-model="txt_BPlace" />
+                        到站：<input type="text" v-model="txt_EPlace" />
+                        <input class="btn btn-primary" type="button" value="查询" v-on:click="modalSearch" />
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>选择</th>
+                                    <th>司机姓名</th>
+                                    <th>车辆性质</th>
+                                    <th>车牌号</th>
+                                    <th>所属网点</th>
+                                    <th>车型</th>
+                                    <th>车俩规格（m）</th>
+                                    <th>发站</th>
+                                    <th>到站</th>
+                                    <th>单价(含税)</th>
+                                    <th>车俩状态</th>
+                                    <th>额定载量(T)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Modalsitem in Modals">
+                                    <td v-for="info in infos"><input type="checkbox" name="ck" :value="Modalsitem.o_Id" v-on:click="CK_List()" /></td>
+                                    <td>{{Modalsitem.o_Driver}}</td>
+                                    <td>{{Modalsitem.o_Nature}}</td>
+                                    <td>{{Modalsitem.o_Row}}</td>
+                                    <td>{{Modalsitem.o_branch}}</td>
+                                    <td>{{Modalsitem.o_Type}}</td>
+                                    <td>{{Modalsitem.o_CarSpec}}</td>
+                                    <td>{{Modalsitem.o_Starting}}</td>
+                                    <td>{{Modalsitem.o_Station}}</td>
+                                    <td>{{Modalsitem.o_Price}}</td>
+                                    <td>{{Modalsitem.o_State}}</td>
+                                    <td>{{Modalsitem.o_Rated}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">关 闭</button>
+                        <button type="button" class="btn btn-primary" v-on:click="checkedList(info.if_Id)">提 交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+        //显示询价单
+    var vueShow = new Vue({
+        el: '#BJ',
+        data() {
+            return {
+                infos: "",
+                Modals: "",
+                txt_No: "",
+                txt_Name: "",
+                txt_BPlace: "",
+                txt_EPlace: "",
+            }
+        },
+        mounted: function () {
+            //显示主体
+            this.show();
+            //模态框
+            this.modalShow();
+
+        },
+        methods: {
+            //显示主体
+            show: function () {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Inquiry_M/GetXiangQing?Id=" +@ViewBag.Id,
+                }).then((response => (this.infos = response.data)))
+            },
+            //显示模态框
+            modalShow: function () {
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:57030/api/Inquiry_M/OfferById'
+                }).then((response => (this.Modals = response.data)))
+            },
+            //模态框查询
+            modalSearch: function () {
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:57030/api/Inquiry_M/OfferById?carNo=' + this.txt_No + "&driver=" + this.txt_Name + "&bPlace=" + this.txt_BPlace + "&ePlace=" + this.txt_EPlace,
+                }).then((response => (this.Modals = response.data)))
+            },
+            //复选框
+            CK_List: function() {
+                //遍历复选框
+                var list = document.getElementsByName("ck");
+                var a = 0;
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].checked) {
+                        if (a == 4) {
+                            alert('朋友最多选择4个司机哦！')
+                            list[i].checked = false;
+                            return;
+                        }
+                        a++;
+                    }
+                }
+            },
+            //收集复选框的Id
+            checkedList: function (id) {
+                //遍历复选框
+                var list = document.getElementsByName("ck");
+                var a = 0;
+                var ids = "";
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].checked) {
+                        //添加ids
+                        ids += list[i].value+",";
+                        if (a == 4) {
+                            alert('朋友最多选择4个司机哦！')
+                            list[i].checked = false;
+                            return;
+                        }
+                        a++;
+                    }
+                }
+                //提交
+                this.add(id,ids);
+            },
+            //提交
+            add: function (id, ids, id2) {
+                if (ids == "") {
+                    alert("请选择一个司机进行询价");
+                    return;
+                }
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:57030/api/Inquiry_M/CommitOffer?id=' + id + "&ids=" + ids,
+                }).then((res) => {
+                    if (res.data >= 0) {
+                        alert('提交成功,待司机报价');
+                        //刷新模态框
+                        this.modalShow();
+                    }
+                })
+            }
+        }
+    });
+
+</script>

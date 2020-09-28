@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewData["Title"] = "ShenHe";
+}
+<script src="~/js/axios.min.js"></script>
+<script src="~/js/vue.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<h2>询价单管理-审核询价单</h2>
+<div id="Xq">
+    <div v-for="info in infos">
+        <div>
+            订单号 <span style="color:red">*</span> {{info.if_Number}}
+        </div>
+        <hr />
+        <h2>运输地址</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>始发地</td>
+                <td>目的地</td>
+            </tr>
+            <tr>
+                <td>{{info.if_BeginPlace}}</td>
+                <td>{{info.if_EndPlace}}</td>
+            </tr>
+        </table>
+        <h2>计划时间</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>计划装货时间</td>
+                <td>计划到货时间</td>
+            </tr>
+            <tr>
+                <td>{{info.if_PlanBCarTime}}</td>
+                <td>{{info.if_PlanArrivalTime}}</td>
+            </tr>
+        </table>
+        <h2>货物信息</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>货名</td>
+                <td>规格型号</td>
+                <td>总包装</td>
+                <td>总数量</td>
+                <td>总重量kg</td>
+            </tr>
+            <tr>
+                <td>{{info.if_Goods}}</td>
+                <td>{{info.if_Specification}}</td>
+                <td>{{info.if_TotalPackage}}</td>
+                <td>{{info.if_Num}}</td>
+                <td>{{info.if_AllWeight}}</td>
+            </tr>
+        </table>
+        <h2>备注</h2>
+        <div>{{info.if_Remark}}</div>
+        <table class="table table-bordered">
+            <tr>
+                <td><input value="审核" type="button" v-on:click="ShenHe(info.if_Id)" /></td>
+                <td><input value="拒绝" type="button" v-on:click="Refuse(info.if_Id)" /></td>
+                <td><input value="返回" type="button" v-on:click="location.href='/Inquiry_M/Index'" /></td>
+            </tr>
+        </table>
+        <table class="table table-bordered">
+            <tr></tr>
+            <tr></tr>
+        </table>
+    </div>
+</div>
+<script>
+    //显示询价单
+    var vueShow = new Vue({
+        el: '#Xq',
+        data() {
+            return {
+                infos: "",
+            }
+        },
+        mounted: function () {
+            //显示主体
+            this.show();
+        },
+        methods: {
+            //显示主体
+            show: function () {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Inquiry_M/GetXiangQing?Id=" +@ViewBag.Id,
+                }).then((response => (this.infos = response.data)))
+            },
+            //审核
+            ShenHe(id) {
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:57030/api/Inquiry_M/ShenHe?Id=' + id,
+                }).then((response) => {
+                    if (response.data > 0) {
+                        alert('审核成功');
+                        location.href = "/Inquiry_M/Index";
+                    } else {
+                        alert('审核失败');
+                    }
+                });
+            },
+            //拒绝
+            Refuse(id) {
+                axios({
+                    method: 'post',
+                    url: 'http://localhost:57030/api/Inquiry_M/RefuseById?Id=' + id,
+                }).then((response) => {
+                    if (response.data > 0) {
+                        location.href = "/Inquiry_M/Index";
+                    }
+                })
+            },
+           
+
+
+        }
+    });
+</script>

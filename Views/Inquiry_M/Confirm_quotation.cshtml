@@ -1,0 +1,205 @@
+﻿
+@{
+    ViewData["Title"] = "Confirm_quotation";
+}
+<script src="~/js/axios.min.js"></script>
+<script src="~/js/vue.min.js"></script>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/bootstrap.min.js"></script>
+<h2>询价单管理-询价单报价</h2>
+<div id="BJ">
+    <div v-for="info in infos">
+        <div>
+            订单号 <span style="color:red">*</span> {{info.if_Number}}
+        </div>
+        <hr />
+        <h2>运输地址</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>始发地</td>
+                <td>目的地</td>
+            </tr>
+            <tr>
+                <td>{{info.if_BeginPlace}}</td>
+                <td>{{info.if_EndPlace}}</td>
+            </tr>
+        </table>
+        <h2>计划时间</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>计划装货时间</td>
+                <td>计划到货时间</td>
+            </tr>
+            <tr>
+                <td>{{info.if_PlanBCarTime}}</td>
+                <td>{{info.if_PlanArrivalTime}}</td>
+            </tr>
+        </table>
+        <h2>货物信息</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>货名</td>
+                <td>规格型号</td>
+                <td>总包装</td>
+                <td>总数量</td>
+                <td>总重量kg</td>
+            </tr>
+            <tr>
+                <td>{{info.if_Goods}}</td>
+                <td>{{info.if_Specification}}</td>
+                <td>{{info.if_TotalPackage}}</td>
+                <td>{{info.if_Num}}</td>
+                <td>{{info.if_AllWeight}}</td>
+            </tr>
+        </table>
+        <h2>备注</h2>
+        <textarea readonly="readonly" style="width:1125px;height:40px;text-align:inherit">{{info.if_Remark}}</textarea>
+        <h2>运输询价</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>
+                    <input :value="info.if_BeginPlace" type="text" readonly="readonly" />
+                    <span style="font-weight:bold">---------></span>
+                    <input :value="info.if_EndPlace" type="text" readonly="readonly" />
+                </td>
+            </tr>
+        </table>
+        <h2>司机报价</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td> </td>
+                <td>司机姓名</td>
+                <td>车俩性质</td>
+                <td>车牌号</td>
+                <td>车型</td>
+                <td>车辆规格</td>
+                <td>单价</td>
+                <td>载量</td>
+                <td>发站</td>
+                <td>到站</td>
+                <td>额定载量(T)</td>
+                <td>运输费合计(￥)</td>
+                <td>其他费用(￥)</td>
+                <td>总费用(￥)</td>
+            </tr>
+            <tr v-for="(value,key) in carInfos">
+                <td><input type="radio" name="rdi" v-on:click="CK_Rd(value.o_TotalPrice,value.o_Rated)" /></td>
+                <td>{{value.o_Driver}}</td>
+                <td>{{value.o_Nature}}</td>
+                <td>{{value.o_Row}}</td>
+                <td>{{value.o_Type}}</td>
+                <td>{{value.o_CarSpec}}</td>
+                <td>{{value.o_Price}}</td>
+                <td>{{value.o_Capacity}}</td>
+                <td>{{value.o_Starting}}</td>
+                <td>{{value.o_Station}}</td>
+                <td>{{value.o_Rated}}</td>
+                <td>{{value.o_Freight}}</td>
+                <td>{{value.o_Other}}</td>
+                <td>{{value.o_TotalPrice}}</td>
+            </tr>
+        </table>
+        <hr />
+        <h2>添加报价</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td><span style="color:red">*</span>添加利润</td>
+                <td><span style="color:red">*</span>其他费用(￥)</td>
+                <td><span style="color:red">*</span>报价有效截止日期</td>
+                <td><span style="color:red">*</span>总计</td>
+            </tr>
+            <tr>
+                <td> <input type="text" v-model="objs.cp_Profit" />| 元/T</td>
+                <td><input type="text" v-model="objs.cp_ElseCost" /></td>
+                <td><input type="date" v-model.string="objs.cp_EndTime" v-on:change="CountMoney" /></td>
+                <td><input v-model="objs.cp_Aggregate" /></td>
+            </tr>
+        </table>
+        <div style="float:left;margin-left:220px">
+            <input type="button" value="添 加" v-on:click="add(info.if_Id)" style="width:65px;height:40px" />
+        </div>
+        <div style="float:right;margin-right:220px">
+            <input type="button" value="返 回" v-on:click="Back_Index" style="width:65px;height:40px" />
+        </div>
+        <hr />
+    </div>
+</div>
+<script>
+        //显示询价单
+    var vueShow = new Vue({
+        el: '#BJ',
+        data() {
+            return {
+                infos: "",
+                carInfos: "",
+                Car_Money:0,
+                Car_o_Rated: 1,
+                objs: {
+                },
+            }
+        },
+        mounted: function () {
+            //显示主体
+            this.show();
+            //显示司机报价信息
+            this.carShow();
+        },
+       methods: {
+            //显示主体
+            show: function () {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Inquiry_M/GetXiangQing?Id=" +@ViewBag.Id,
+                }).then((response => (this.infos = response.data)))
+            },
+            //显示司机报价信息
+            carShow: function () {
+                axios({
+                    method: 'get',
+                    url: 'http://localhost:57030/api/Inquiry_M/Inquire_driver_Offer?Id=' +@ViewBag.Id,
+                }).then(res => {
+                    this.carInfos = res.data;
+                })
+            },
+            //选中单选的司机总金额
+            CK_Rd: function (money, o_Rated) {
+                this.Car_Money = money;
+                this.Car_o_Rated = o_Rated;
+            },
+            //计算总金额
+            CountMoney: function () {
+                this.objs.cp_Aggregate = Number(this.objs.cp_Profit) * Number(this.Car_o_Rated) + Number(this.objs.cp_ElseCost) + Number(this.Car_Money);
+            },
+            //添加承运商利润表
+            add: function (id) {
+                this.objs.oid = id;
+                this.objs.cp_Profit = parseInt(this.objs.cp_Profit);
+                this.objs.cp_ElseCost = parseInt(this.objs.cp_ElseCost);
+                axios.post('http://localhost:57030/api/Inquiry_M/Add_Profits', JSON.stringify(this.objs), {
+                    headers: {
+                    'Content-Type': 'application/json;charset=UTF-8'
+                }
+                })
+                    .then(res => {
+                        if (res.data > 0) {
+                        //修改状态为完成报价(4)
+                            this.Upt(@ViewBag.Id);
+                            alert('已完成报价');
+                            location.href = "/Inquiry_M/Index";
+                    }
+                })
+           },
+           Upt: function (id) {
+               axios.put('http://localhost:57030/api/Inquiry_M/FinishById?Id=' + id)
+                   .catch(function (error) {
+                       console.log(error);
+                   })
+           },
+            //返回主页面
+            Back_Index: function () {
+                location.href = "/Inquiry_M/Index";
+            }
+        }
+    });
+
+</script>
