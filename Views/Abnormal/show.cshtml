@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewData["Title"] = "show";
+}
+
+<h1>回单签收</h1>
+<div id="app">
+    <div>
+        <div style="float:left">
+            <label class="layui-form-label">订单号</label>
+        </div>
+        <div style="float:left">
+            <input type="text" id="ddh" placeholder="请输入订单号" autocomplete="off" class="layui-input" />
+        </div>
+        <div style="float:left">
+            <label class="layui-form-label">委托方</label>
+        </div>
+        <div style="float:left">
+            <input type="text" id="sb" placeholder="请输入委托方" autocomplete="off" class="layui-input" />
+        </div>
+        <div style="float:left">
+            <button type="button" class="layui-btn" v-on:click="show()"><i class="layui-icon layui-icon-search"></i></button>
+        </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn layui-btn-radius layui-btn-normal" v-on:click="select()">查看</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th><input type="checkbox" /></th>
+                <th v-for="(item,index) in header">{{item}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item,index) in bodys">
+                <th><input type="checkbox" :value="item.if_Id" class="ckitem" /></th>
+                <th>{{item.if_Number}}</th>
+                <th>{{item.if_OrderTime}}</th>
+                <th>{{item.e_Company}}</th>
+                <th>{{item.e_Person}}</th>
+                <th>{{item.e_Phone}}</th>
+                <th>{{item.if_BeginPlace}}</th>
+                <th>{{item.if_EndPlace}}</th>
+                <th>{{item.o_Row}}</th>
+                <th>{{item.a_Signing}}</th>
+                <th>{{item.a_Signing}}</th>
+                <th>{{item.a_Abnormal==1?"已处理":"未确认"}}</th>
+            </tr>
+        </tbody>
+    </table>
+    <button></button>
+</div>
+<script>
+    //module
+    var data = {
+        dialogVisible: false,
+        header: ["订单号", "下单时间", "委托方", "联系人", "委托人电话", "始发地", "目的地", "车牌", "回单上传时间", "回单确认时间", "客户回单确认状态"],
+        bodys: "",
+        obj: {
+            if_id: "",
+            if_Number: "",
+            if_OrderTime: "",
+            e_Company: "",
+            e_Person: "",
+            e_Phone: "",
+            if_BeginPlace: "",
+            if_EndPlace: "",
+            o_Row: "",
+            a_Signing: "",
+            a_Abnormal: "",
+        }
+    };
+    //ViewModel
+    new Vue({
+        el: "#app",
+        data,
+        mounted: function () {
+            this.show(); //调用Show方法,传递
+        }, //在Dom元素更新渲染完后调用,vue的生命周期，相当于页面加载事件进来显示哪些数据
+        methods: {
+            show: function () {
+                let ddh = $("#ddh").val();
+                let sb = $("#sb").val();
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Abnormal/GetAbnormalList?ddh=" + ddh + "&sb=" + sb
+                }).then(res => {
+                    this.bodys = res.data;
+                })
+            },
+            select: function () {
+                let id = $(".ckitem:checked").val();
+                location.href = "http://localhost:52767/Abnormal/detail?id=" + id;
+            }
+        }
+    })
+</script>
+

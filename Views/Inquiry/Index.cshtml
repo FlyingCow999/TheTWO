@@ -1,0 +1,96 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h3>订单显示</h3>
+<div id="app">
+    <div>
+        <div style="float:left">
+            <label class="layui-form-label">订单号</label>
+        </div>
+        <div style="float:left">
+            <input type="text" id="ddh" placeholder="请输入订单号" autocomplete="off" class="layui-input" />
+        </div>
+        <div style="float:left">
+            <label class="layui-form-label">公司名</label>
+        </div>
+        <div style="float:left">
+            <input type="text" id="gs" placeholder="请输入公司名" autocomplete="off" class="layui-input" />
+        </div>
+        <div style="float:left">
+            <button type="button" class="layui-btn" v-on:click="show()"><i class="layui-icon layui-icon-search"></i></button>
+        </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" class="layui-btn layui-btn-radius layui-btn-normal" v-on:click="chuli()">调度处理</button>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th><input type="checkbox" /></th>
+                <th v-for="(item,index) in header">{{item}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item,index) in bodys">
+                <th><input type="checkbox" :value="item.if_Id" class="ckitem" /></th>
+                <th>{{item.if_Number}}</th>
+                <th>{{item.e_Company}}</th>
+                <th>{{item.e_Person}}</th>
+                <th>{{item.if_OrderTime}}</th>
+                <th>{{item.if_PlanBCarTime}}</th>
+                <th>{{item.if_PlanArrivalTime}}</th>
+                <th>{{item.if_BeginPlace}}</th>
+                <th>{{item.if_EndPlace}}</th>
+                <th>{{item.if_Goods}}</th>
+                <th>{{item.if_AllWeight}}</th>
+                <th>{{item.co_State==1?"已处理":"待处理"}}</th>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    //module
+    var data = {
+        dialogVisible: false,
+        header: ["订单号", "公司名", "联系人", "下单时间", "计划发车时间", "计划到达时间", "始发地", "目的地", "货物", "总重量kg", "状态"],
+        bodys: "",
+        obj: {
+            if_id: "",
+            if_Num: "",
+            e_Company: "",
+            e_Person: "",
+            if_OrderTime: "",
+            if_PlanBCarTime: "",
+            if_PlanArrivalTime: "",
+            if_BeginPlace: "",
+            if_EndPlace: "",
+            if_Goods: "",
+            if_AllWeight: "",
+            if_State: ""
+        }
+    };
+    //ViewModel
+    new Vue({
+        el: "#app",
+        data,
+        mounted: function () {
+            this.show(); //调用Show方法,传递
+        }, //在Dom元素更新渲染完后调用,vue的生命周期，相当于页面加载事件进来显示哪些数据
+        methods: {
+            show: function () {
+                let ddh = $("#ddh").val();
+                let gs = $("#gs").val();
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Dispatch/GetInquiryInfo?ddh=" + ddh + "&gs=" + gs
+                }).then(res => {
+                    this.bodys = res.data;
+                })
+            },
+            chuli: function () {
+                let id = $(".ckitem:checked").val();
+                location.href = "http://localhost:52767/Inquiry/dispatch?ifid=" + id;
+            }
+        }
+    })
+</script>

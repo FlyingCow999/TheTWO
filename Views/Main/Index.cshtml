@@ -1,0 +1,346 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TMS物流</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=10, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script src="../layuiadmin/layui/layui.js"></script>
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    <script>
+        /^http(s*):\/\//.test(location.href) || alert('请先部署到 localhost 下再访问');
+    </script>
+</head>
+<body class="layui-layout-body">
+
+    <div id="LAY_app">
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header layui-row">
+                <!-- 头部区域 -->
+                <ul class="layui-nav layui-layout-left">
+                    <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                        <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                            <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                        </a>
+                    </li>
+
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </a>
+                    </li>
+
+                </ul>
+                <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" layadmin-event="theme">
+                            <i class="layui-icon layui-icon-theme"></i>
+                        </a>
+                    </li>
+
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" layadmin-event="fullscreen">
+                            <i class="layui-icon layui-icon-screen-full"></i>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;">
+                            <cite><span id="UserName"></span></cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd style="text-align: center;"><a href="/jQueryLogin/index.html">退出</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item " lay-unselect>
+                        <div id="test" class="layui-bg-black"></div>
+                    </li>
+                    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
+                        <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 侧边菜单 -->
+            <div class="layui-side layui-side-menu;">
+                <div class="layui-side-scroll">
+                    <div class="layui-logo" lay-href="home/console.html">
+                        <span>飞牛物流</span>
+                    </div>
+
+                    <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                            <li data-name="home" class="layui-nav-item layui-nav-itemed">
+                                <a href="javascript:;" lay-tips="主页" lay-direction="2">
+                                    <i class="layui-icon layui-icon-home"></i>
+                                    <cite>主页</cite>
+                                </a>
+                                <dl class="layui-nav-child">
+                                    <dd data-name="console" class="layui-this">
+                                        <a lay-href="/Main/back">主页</a>
+                                    </dd>
+                                    @*
+                                        <dd data-name="console">
+                                            <a lay-href="home/homepage1.html">主页一</a>
+                                        </dd>
+                                        <dd data-name="console">
+                                            <a lay-href="home/homepage2.html">主页二</a>
+                                        </dd>*@
+                                </dl>
+                            </li>
+
+                            <li data-name="set" class="layui-nav-item">
+                                <a href="javascript:;" lay-tips="调度管理" lay-direction="2">
+                                    <i class="layui-icon layui-icon-set"></i>
+                                    <cite>调度管理</cite>
+                                </a>
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed">
+                                        <a>调度配载</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Inquiry/Index">调度配载</a></dd>
+                                            <dd><a lay-href="/Inquiry/dispatch">调度处理</a></dd>
+                                            <dd><a lay-href="/Plan/ggupdate">调度处理</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>生产排程</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Plan/scpc">排程计划</a></dd>
+                                            <dd><a lay-href="/Plan/scadd">新增排程</a></dd>
+                                            <dd><a lay-href="/Plan/scupdate">修改计划</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>采购计划</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Plan/cgshow">计划预览</a></dd>
+                                            <dd><a lay-href="/Plan/cgadd">新增计划</a></dd>
+                                            <dd><a lay-href="/Plan/cgsel">计划详情</a></dd>
+                                        </dl>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-name="app" class="layui-nav-item">
+                                <a href="javascript:;" lay-tips="生产管理" lay-direction="2">
+                                    <i class="layui-icon layui-icon-app"></i>
+                                    <cite>生产管理</cite>
+                                </a>
+
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed">
+                                        <a>订单管理</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Order/ZShow">订单查询</a></dd>
+                                            <dd><a lay-href="/Order/Add">添加订单</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>生产详情</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Order/Show">生产详情</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>物料管理</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Shop/Show">领取详情</a></dd>
+                                            <dd><a lay-href="/Shop/Add">物料领取</a></dd>
+                                            <dd><a lay-href="/Shop/WuAdd">添加物料</a></dd>
+                                        </dl>
+                                    </dd>
+                                </dl>
+
+                            </li>
+                            <li data-name="senior" class="layui-nav-item">
+                                <a href="javascript:;" lay-tips=" 仓库管理" lay-direction="2">
+                                    <i class="layui-icon layui-icon-senior"></i>
+                                    <cite> 仓库管理</cite>
+                                </a>
+                                <dl class="layui-nav-child">
+                                    <dd data-name="echarts">
+                                        <a lay-href="">原料采购验收</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/EMS/RaW">采购验收记录</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd data-name="echarts">
+                                        <a href="javascript:;">物料入库查询</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/EMS/MaterialStorages">采购入库记录</a></dd>
+                                            <dd><a lay-href="/EMS/GetShenHe">采购入库详情</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd data-name="echarts">
+                                        <a href="javascript:;">库存</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/EMS/Invert">采购记录(库存)</a></dd>
+                                            <dd><a lay-href="/EMS/MX">采购明细</a></dd>
+                                        </dl>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-name="set" class="layui-nav-item">
+                                <a href="javascript:;" lay-tips="设备管理" lay-direction="2">
+                                    <i class="layui-icon layui-icon-set"></i>
+                                    <cite>设备管理</cite>
+                                </a>
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed">
+                                        <a>设备信息</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/XM/ERJI">基础信息</a></dd>
+                                            <dd><a lay-href="/XM/Add">添加设备</a></dd>
+                                            <dd><a lay-href="/XM/Upt">修改设备</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>异常</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/XM/YCShow">异常信息</a></dd>
+                                            <dd><a lay-href="/XM/YCAdd">异常反馈</a></dd>
+                                        </dl>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <li data-name="set" class="layui-nav-item">
+                                <a href="javascript:;" lay-tips="系统管理" lay-direction="2">
+                                    <i class="layui-icon layui-icon-set"></i>
+                                    <cite>系统管理</cite>
+                                </a>
+                                <dl class="layui-nav-child">
+                                    <dd class="layui-nav-itemed">
+                                        <a>客户信息</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Client/Show">客户查询</a></dd>
+                                            <dd><a lay-href="/Client/a">添加客户</a></dd>
+                                            <dd><a lay-href="/Client/Upt">修改客户</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>仓库信息</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/Store/Show">仓库信息</a></dd>
+                                            <dd><a lay-href="/Store/Add">添加仓库</a></dd>
+                                        </dl>
+                                    </dd>
+                                    <dd class="layui-nav-itemed">
+                                        <a>成员信息</a>
+                                        <dl class="layui-nav-child">
+                                            <dd><a lay-href="/User/Show">成员信息</a></dd>
+                                            @*
+                                                <dd><a lay-href="/User/Show2">管理员</a></dd>*@
+                                            <dd><a lay-href="/User/Upt">修改信息</a></dd>
+                                        </dl>
+                                    </dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 页面标签 -->
+            <div class="layadmin-pagetabs" id="LAY_app_tabs">
+                <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+                <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+                <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                    <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                        <li class="layui-nav-item" lay-unselect>
+                            <a href="javascript:;"></a>
+                            <dl class="layui-nav-child layui-anim-fadein">
+                                <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                                <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                                <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+                <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+                    <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                        <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- 主体内容 -->
+            <div class="layui-body" id="LAY_app_body">
+                <div class="layadmin-tabsbody-item layui-show">
+                    <iframe src="" frameborder="0" class="layadmin-iframe"></iframe>
+                </div>
+            </div>
+
+            <!-- 辅助元素，一般用于移动设备下遮罩 -->
+            <div class="layadmin-body-shade" layadmin-event="shade"></div>
+        </div>
+    </div>
+
+
+    <script>
+        li = '';
+
+        layui.config({
+            base: '../layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use('index');
+
+
+        //layui.use('util', function () {
+        //    var util = layui.util;
+
+        //    //示例
+        //    var time = new Date();
+        //    time.setMinutes(time.getMinutes() + 20);
+        //    //time.setSeconds(time.getSeconds() + 10);
+        //    var endTime = new Date(time).getTime() //假设为结束日期
+        //        //var endTime = new Date(2099, 1, 1).getTime() //假设为结束日期
+        //        , serverTime = new Date().getTime(); //假设为当前服务器时间，这里采用的是本地时间，实际使用一般是取服务端的
+
+        //    util.countdown(endTime, serverTime, function (date, serverTime, timer) {
+        //        var str = date[2] + '分' + date[3] + '秒';
+        //        layui.$('#test').html(str);
+        //    });
+
+        //});
+        //window.reloadView = function () {
+        //    var a = layui.$('#test').html();
+        //    if (a == "0分0秒") {
+        //        alert("请重新登录!!");
+        //        location.href = "/jQueryLogin/index.html";
+        //    }
+        //}
+
+        //setInterval('reloadView()', /*5000*/1200000);
+
+
+        //$(function () {
+        //    var storage = window.sessionStorage;
+        //    var str = storage.getItem("name");
+
+        //    if (str == null || str == "" || str == undefined) {
+        //        $("#UserName").html("未登录");
+        //        window.location.href = "/jQueryLogin/index.html";
+        //        return;
+        //    } else {
+        //        $("#UserName").html("欢迎您:【" + str + "】");
+        //    }
+        //})
+
+    </script>
+</body>
+</html>
+
+
+
+

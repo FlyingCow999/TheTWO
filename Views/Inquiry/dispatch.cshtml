@@ -1,0 +1,234 @@
+﻿
+@{
+    ViewData["Title"] = "dispatch";
+}
+
+<h1>调度处理</h1>
+<div id="app">
+    <div v-for="item in bodys">
+        <h2>运单信息</h2>
+        <table class="table table-bordered">
+            <tr>
+                <td>订单号</td>
+                <td>计划装货时间</td>
+                <td>计划到货时间</td>
+                <td>始发地</td>
+                <td>目的地</td>
+                <td>委托方</td>
+                <td>委托人</td>
+                <td>联系电话</td>
+                <td>详细地址</td>
+                <td>收货方</td>
+                <td>收货人</td>
+                <td>联系电话</td>
+                <td>收货地址</td>
+                <td>货名</td>
+                <td>规格型号</td>
+                <td>总包装</td>
+                <td>总数量</td>
+                <td>总重量</td>
+                <td>提货联系人</td>
+                <td>联系电话</td>
+                <td>提货地址</td>
+                <td>订单备注</td>
+            </tr>
+            <tr>
+                <td>{{item.if_Number}}</td>
+                <td>{{item.if_PlanBCarTime}}</td>
+                <td>{{item.if_PlanArrivalTime}}</td>
+                <td>{{item.if_BeginPlace}}</td>
+                <td>{{item.if_EndPlace}}</td>
+                <td>{{item.e_Company}}</td>
+                <td>{{item.e_Person}}</td>
+                <td>{{item.e_Phone}}</td>
+                <td>{{item.e_Address}}</td>
+                <td>{{item.co_Company}}</td>
+                <td>{{item.co_Person}}</td>
+                <td>{{item.co_Phone}}</td>
+                <td>{{item.co_Address}}</td>
+                <td>{{item.if_Goods}}</td>
+                <td>{{item.if_Specification}}</td>
+                <td>{{item.if_TotalPackage}}</td>
+                <td>{{item.if_Num}}</td>
+                <td>{{item.if_AllWeight}}</td>
+                <td>{{item.e_AddPerson}}</td>
+                <td>{{item.e_AddPhone}}</td>
+                <td>{{item.e_Address}}</td>
+                <td>{{item.if_Remark}}</td>
+            </tr>
+        </table>
+        <h2>    </h2>
+        <input type="hidden" :value="item.o_Id" id="hide" />
+        <table class="table table-bordered">
+            <tr>
+                <td>司机姓名</td>
+                <td>车牌号</td>
+                <td>车辆性质</td>
+                <td>车型</td>
+                <td>车辆规格</td>
+                <td>单价(含税)</td>
+                <td>运输费(￥)</td>
+                <td>其他费用(￥)</td>
+                <td>费用总计(￥)</td>
+            </tr>
+            <tr>
+                <td>{{item.o_Driver}}</td>
+                <td>{{item.o_Row}}</td>
+                <td>{{item.o_Nature}}</td>
+                <td>{{item.o_Type}}</td>
+                <td>{{item.o_CarSpec}}</td>
+                <td>{{item.o_Price}}</td>
+                <td>{{item.o_Freight}}</td>
+                <td>{{item.o_Other}}</td>
+                <td>{{item.o_Other+item.o_Freight}}</td>
+            </tr>
+        </table>
+        <button data-toggle='modal' data-target='#exampleModal' type='button' class="btn btn-primary">
+            司机调度
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">司机调度</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div>
+                        发站：<input type="text" id="fz" />
+                        到站：<input type="text" id="dz" />
+                        <input type="button" value="查询" v-on:click="modalSearch" />
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox" /></th>
+                                    <th>司机姓名</th>
+                                    <th>车辆性质</th>
+                                    <th>车牌号</th>
+                                    <th>所属网点</th>
+                                    <th>车型</th>
+                                    <th>车俩规格（m）</th>
+                                    <th>发站</th>
+                                    <th>到站</th>
+                                    <th>单价(含税)</th>
+                                    <th>车俩状态</th>
+                                    <th>额定载量(T)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="Modalsitem in Modals">
+                                    <td><input type="checkbox" name="ck" :value="Modalsitem.o_Id" /></td>
+                                    <td>{{Modalsitem.o_Driver}}</td>
+                                    <td>{{Modalsitem.o_Nature}}</td>
+                                    <td>{{Modalsitem.o_Row}}</td>
+                                    <td>{{Modalsitem.o_branch}}</td>
+                                    <td>{{Modalsitem.o_Type}}</td>
+                                    <td>{{Modalsitem.o_CarSpec}}</td>
+                                    <td>{{Modalsitem.o_Starting}}</td>
+                                    <td>{{Modalsitem.o_Station}}</td>
+                                    <td>{{Modalsitem.o_Price}}</td>
+                                    <td>{{Modalsitem.o_State}}</td>
+                                    <td>{{Modalsitem.o_Rated}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            关闭
+                        </button>
+                        <button type="button" class="btn btn-primary" v-on:click="checkedList">
+                            提交
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //module
+    var data = {
+        bodys:"",
+        Modals: "",
+    };
+
+    //ViewModel
+    new Vue({
+        el: "#app",
+        data,
+        mounted: function () {
+            this.select();//调用select方法     反填订单的所有信息
+            this.show();//调用show方法         显示接受该订单的司机
+            this.showm();//调用showm方法       显示模态框
+        },
+        methods: {
+            select() {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Dispatch/GetAllList?code=" +@ViewBag.id,
+                }).then(res => {
+                    this.bodys = res.data
+                })
+            },
+            show() {
+                 axios({
+                    method: "get",
+                    url:"http://localhost:57030/api/Dispatch/GetOfferList?code="+@ViewBag.id,
+                }).then(res => {
+                    this.bodys=res.data
+                })
+            },
+            showm() {
+                axios({
+                    method: "get",
+                    url:"http://localhost:57030/api/Dispatch/GetOfferInfo?code="+@ViewBag.id,
+                }).then(res => {
+                    console.log(res.data),
+                    this.Modals=res.data
+                })
+            },
+            //在模态框中进行查询
+            modalSearch() {
+                txt_BPlace = $("#fz").val();
+                txt_EPlace = $("#dz").val();
+                 axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/Dispatch/GetOfferInfo?code=" + @ViewBag.id + "&start=" + txt_BPlace + "&end=" + txt_EPlace,
+                }).then(res => {
+                    this.Modals=res.data
+                })
+            },
+            checkedList() {
+                var arr = document.getElementsByName("ck");
+                var str = "";
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i].checked) {
+                        str += arr[i].value + ",";
+                    }
+                }
+                id = $("#hide").val();
+                idarr = id + "," + str;
+                obj = {
+                    transportid: idarr,
+                    orderid: parseInt(@ViewBag.id),
+                    dis_State: parseInt(1)
+                };
+                axios.post('http://localhost:57030/api/Dispatch/AddDispatch', JSON.stringify(obj), {
+                    headers: {
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    }
+                }).then(res => {
+                    if (res.data== 1) {
+                        alert("提交成功!");
+                        location.href = "/Inquiry/Index";
+                    }
+                })
+            }
+        }
+    })
+</script>
