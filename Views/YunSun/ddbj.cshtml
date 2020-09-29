@@ -1,0 +1,143 @@
+﻿
+@{
+    ViewData["Title"] = "ddbj";
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/vue.min.js"></script>
+    <script src="~/axios.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    <h1>报价管理-订单报价</h1>
+    <div id="app">
+        <div v-for="item in emps">
+            <h5>运输地址</h5>
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width:60px">始发地</td>
+                    <td style="width:60px">目的地</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.if_EndPlace}}</td>
+                </tr>
+            </table>
+            <h5>计划时间</h5>
+            <table class="table table-bordered" style="width:1000px">
+                <tr>
+                    <td style="width:230px">计划装货时间</td>
+                    <td style="width:300px">计划到货时间</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_PlanBCarTime}}</td>
+                    <td>{{item.if_PlanArrivalTime}}</td>
+                </tr>
+            </table>
+            <h5>货物信息</h5>
+            <table class="table table-bordered" style="width:800px">
+                <tr>
+                    <td style="width:80px">货名</td>
+                    <td style="width:100px">规格型号</td>
+                    <td style="width:100px">总包装</td>
+                    <td style="width:100px">总数量</td>
+                    <td style="width:100px">总重量kg</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_Goods}}</td>
+                    <td>{{item.if_Specification}}</td>
+                    <td>{{item.if_TotalPackage}}</td>
+                    <td>{{item.if_Num}}</td>
+                    <td>{{item.if_AllWeight}}</td>
+                </tr>
+            </table>
+            <h5>订单备注</h5>
+            <textarea readonly="readonly" style="width:1125px;height:40px;text-align:inherit">{{item.if_Remark}}</textarea>
+            <h5>运输方案</h5>
+            <table class="table table-bordered">
+                <tr>
+                    <td>
+                        <input :value="item.if_BeginPlace" type="text" readonly="readonly" />
+                        <span style="font-weight:bold">---------></span>
+                        <input :value="item.if_EndPlace" type="text" readonly="readonly" />
+                    </td>
+                </tr>
+            </table>
+
+            <h1>订单报价</h1>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>单价</td>
+                        <td>载量</td>
+                        <td>运费(￥)</td>
+                        <td>其他运费(￥)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" v-model="o_Price" /></td>
+                        <td><input type="text" v-model="o_Capacity" /></td>
+                        <td><input type="text" v-model="o_TotalPrice" /></td>
+                        <td><input type="text" v-model="o_Other" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input class="layui-btn layui-btn-radius layui-btn-primary" value="提交" type="button" v-on:click="TJ1" />
+
+
+        </div>
+    </div>
+    
+</body>
+</html>
+<script type="text/javascript">
+    var Show = new Vue({
+        el: '#app',
+        data() {
+            return {
+                emps: "",
+                o_Price: "",
+                o_Capacity: "",
+                o_TotalPrice: "",
+                o_Other: "",
+            }
+        },
+        mounted: function () {
+            //显示主体
+            this.show();
+        },
+        methods: {
+            //显示主体
+            show: function () {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/YunShu/ShowXian?djgl=" +"@ViewBag.eid",
+                }).then((data => (this.emps = data.data)))
+            },
+            TJ1: function () {
+                axios.put('http://localhost:57030/api/YunShu/Upt?id=' + parseInt(1) + "&o_Price=" + parseFloat(this.o_Price) + "&o_Capacity=" + this.o_Capacity + "&o_TotalPrice=" + parseFloat(this.o_TotalPrice) + "&o_Other=" + parseFloat(this.o_Other), {
+                    headers: {
+                        'Content-Type': "application/json;charset=UTF-8"
+                    }
+                })
+                    .then(function (response) {
+                        if (response.data > 0) {
+                            alert("修改成功");
+                            location.href = "/YunSun/Add";
+                            //this.add();
+                        }
+                        else {
+                            alert("修改失败");
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        }
+    })
+</script>
+
+

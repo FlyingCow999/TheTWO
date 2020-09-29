@@ -1,0 +1,156 @@
+﻿@{
+    ViewData["Title"] = "dcthd";
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/vue.min.js"></script>
+    <script src="~/axios.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    <h3>运输执行-发车处理</h3>
+    <div id="app">
+        <div v-for="item in emps">
+            <h5>应交货物信息</h5>
+            <table class="table table-bordered">
+                <tr>
+                    <td style="width:80px">订单号</td>
+                    <td style="width:80px">始发地</td>
+                    <td style="width:80px">目的地</td>
+                    <td style="width:80px">委托方</td>
+                    <td style="width:80px">委托人</td>
+                    <td>联系电话</td>
+                    <td style="width:90px">详细地址</td>
+                    <td>收货方</td>
+                    <td style="width:80px">收货人</td>
+                    <td>联系电话</td>
+                    <td>收货地址</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_Number}}</td>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.if_EndPlace}}</td>
+                    <td>{{item.e_Company}}</td>
+                    <td>{{item.e_Person}}</td>
+                    <td>{{item.e_Phone}}</td>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.co_Company}}</td>
+                    <td>{{item.co_Person}}</td>
+                    <td>{{item.co_Phone}}</td>
+                    <td>{{item.co_Address}}</td>
+                </tr>
+            </table>
+            <table class="table table-bordered">
+                <tr>
+                    <td>货名</td>
+                    <td>规格型号</td>
+                    <td>总包装</td>
+                    <td>总数量</td>
+                    <td>总重量</td>
+                    <td>提货联系人</td>
+                    <td>联系电话</td>
+                    <td>提货地址</td>
+                    <td>订单备注</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_Goods}}</td>
+                    <td>{{item.if_Specification}}</td>
+                    <td>{{item.if_TotalPackage}}</td>
+                    <td>{{item.if_Num}}</td>
+                    <td>{{item.if_AllWeight}}</td>
+                    <td>{{item.e_AddPerson}}</td>
+                    <td>{{item.e_Phone}}</td>
+                    <td>{{item.e_Address}}</td>
+                    <td>{{item.if_Remark}}</td>
+                </tr>
+            </table>
+            <h5>实际货物信息</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>订单号</td>
+                        <td>货名</td>
+                        <td>规格型号</td>
+                        <td>数量</td>
+                        <td>总重量kg</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" v-model="obj.t_Order" /></td>
+                        <td><input type="text" v-model="obj.t_Article" /></td>
+                        <td><input type="text" v-model="obj.t_Spec" /></td>
+                        <td><input type="text" v-model="obj.t_Number" /></td>
+                        <td><input type="text" v-model="obj.t_Weight" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <input 	class="layui-btn layui-btn-radius layui-btn-primary" value="提交" type="button" v-on:click="ZT1" />
+            <input 	class="layui-btn layui-btn-radius layui-btn-primary" value="返回" type="button" v-on:click="FH1" />
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    var data = {
+        emps: "",
+        obj: {
+            t_Order: "",
+            t_Article: "",
+            t_Spec: "",
+            t_Number: 0,
+            t_Weight: 0,
+            t_Origin: "123",
+            t_Picture: "1",
+            t_Signing: new Date(),
+            oid: parseInt(1),
+        }
+    };
+    var Showh = new Vue({
+        el: '#app',
+        data,
+            //() {
+            //return {
+            //    emps: "",
+            //    t_Order:"" ,
+            //    t_Article:"",
+            //    t_Spec:"" ,
+            //    t_Number:"" ,
+            //    t_Weight: ""
+            //}
+        mounted: function () {
+            //显示主体
+            this.show();
+        },
+        methods: {
+            //显示主体
+            show: function () {
+                axios({
+                    method: "get",
+                    url: "http://localhost:57030/api/YunShu/yjhwxx?djgl="+"@ViewBag.Id",
+                }).then((data => (this.emps = data.data)))
+            },
+            ZT1: function () {
+                var m = JSON.stringify(this.obj);
+                axios.post('http://localhost:57030/api/YunShu/Post',"jsonStr="+m)
+                    .then(function (response) {
+                        if (response.data > 0) {
+                            alert("添加成功");
+                            //this.add();
+                        }
+                        else {
+                            alert("添加失败");
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            //返回
+            FH1: function () {
+                location.href = "/YunSun/Indexcldj";
+            },
+        }
+    });
+</script>

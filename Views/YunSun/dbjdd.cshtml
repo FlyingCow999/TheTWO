@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "dbjdd";
+}
+<div id="dispatchOrder_wrap"></div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <h1>报价管理-待报价订单</h1>
+    <script src="~/vue.min.js"></script>
+    <script src="~/axios.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/layui-v2.5.6/layui/layui.all.js"></script>
+</head>
+<body>
+    <div id="app">
+        <table v-for="(month,index) in emps" v-if="index==0" v-bind:month="month" v-bind:index="index">
+            <tr>
+                <td style="width:60px">全部<span>{{ month.quanbu }}</span></td>
+                <td style="width:80px">已报价<span>{{month.ybj}}</span></td>
+                <td style="width:80px">未报价<span>{{month.wbj}}</span></td>
+                <td style="width:80px">过期<span>{{month.gq}}</span></td>
+            </tr>
+        </table>
+        <input id="a" value="处理" 	class="layui-btn" type="button" v-on:click="ShenHe" />
+        <!--<input id="btn-success" type="button" value="打印" onclick="printpage()" class="layui-btn layui-btn-primary"--> @*class="layui-btn search_btn""layui-btn layui-btn-warm"*@ <!--/>-->
+        <table class="layui-table" lay-even lay-skin="nob">
+            <thead>
+                <tr>
+                    <td style="width:60px">选择</td>
+                    <td>单号</td>
+                    <td>下单时间</td>
+                    <td>始发地</td>
+                    <td>目的地</td>
+                    <td>计划发车时间</td>
+                    <td>计划到达时间</td>
+                    <td>货物</td>
+                    <td>重量kg</td>
+                    <td>状态</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in emps">
+                    <td><input type="checkbox" name="rd" :id="item.if_Number" :value="item.e_Id" /></td>
+                    <td><a href="#" data-toggle="modal" v-on:click="modalShow(item.if_Number,item.e_Id)" data-target="#exampleModal">{{item.if_Number}}</a></td>
+                    <td>{{item.if_OrderTime}}</td>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.if_EndPlace}}</td>
+                    <td>{{item.if_PlanBCarTime}}</td>
+                    <td>{{item.if_PlanArrivalTime}}</td>
+                    <td>{{item.if_Goods}}</td>
+                    <td>{{item.if_AllWeight}}</td>
+                    <td>{{item.if_State==1?"已报价":item.if_State==2?"未报价":"过期"}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <table class="layui-table">
+                <tr>
+                    <td>共有<span id="Zonggongtiaoshu">{{zongtiaoshu}}</span>条数据</td>
+                    <td>共有<span id="Zonggongyeshu">{{zongyeshu}}</span>页</td>
+                    <td>当前是第<span id="Dangpianyeshu" v-model="dangqian">{{dangqianye}}</span>页</td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="First">首页</button></td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="Prv">上页</button></td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="Next">下页</button></td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="Last">尾页</button></td>
+                </tr>
+            </table>
+        </div>
+        @*------------------------------------------------------------------------------------------------------------------------------*@
+    </div>
+    <script type="text/javascript">
+        var vueShow = new Vue({
+            el: '#app',
+            data: {
+                emps: "",
+                Modals: "",
+                Tis: "",
+                dangqianye: 1,
+                pageSize: 6,
+                zongyeshu: 1,
+                zongtiaoshu: 1,
+            },
+            mounted: function () {
+                //显示主体
+                this.show();
+            },
+            methods: {
+                //显示主体
+                show: function () {
+                    var n = this;
+                    var i = n.dangqianye;
+                    var s = n.pageSize;
+                    axios
+                        .get('http://localhost:57030/api/YunShu/BaoJia', {
+                            params: {
+                                dangqian: i,
+                                meiyetiaoshu: s,
+                            }
+                        })
+                        .then(function (i) {
+                            n.emps = i.data.xianshi;
+                            n.dangqian = i.data.Dangqianye;
+                            n.zongyeshu = i.data.zongyeshu;
+                            n.zongtiaoshu = i.data.zongtiaoshu;
+                        })
+                },
+                //分页
+                //分页按钮点击事件
+                //首页
+                First: function () {
+                    this.dangqianye = 1;
+                    this.show();
+                },
+                //上一页
+                Prv: function () {
+                    this.dangqianye--;
+                    if (this.dangqianye < 1) {
+                        this.dangqianye = 1;
+                    }
+                    this.show();
+                },
+                //下一页
+                Next: function () {
+                    this.dangqianye++;
+                    if (this.dangqianye > this.Zongyeshu) {
+                        this.dangqianye--;
+                    }
+                    this.show();
+                },
+                //尾页
+                Last: function () {
+                    this.dangqianye = this.zongyeshu;
+                    this.show();
+                },
+
+                //审核(跳转到审核页面)
+                ShenHe: function () {
+                    var arr = document.getElementsByName("rd");
+                    for (var i = 0; i < arr.length; i++) {
+                        if (arr[i].checked) {
+                            var id = arr[i].id;
+                            var value = arr[i].value;
+                        }
+                    }
+                    location.href = "/YunSun/ddbj?Id=" + id;
+                },
+
+            printpage:function () {
+            document.getElementById("btn-success").style = "display:none";
+            window.print();
+            document.getElementById("btn-success").style = "display:inline";
+            return false;
+            },
+            }
+        });
+    </script>
+</body>
+</html>
