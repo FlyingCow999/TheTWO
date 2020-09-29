@@ -1,0 +1,203 @@
+﻿
+@{
+    ViewData["Title"] = "CKAdd";
+}
+<link href="~/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
+<script src="~/layui-v2.5.6/layui/layui.js"></script>
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<h6>回单确认</h6>
+<table class="table table-bordered">
+
+    <thead>
+
+        <tr>
+            <th style="background-color:teal"> 回单</th>
+            <td>订单号：</td>
+            <td><label id="ddh"></label></td>
+            <td>当前状态：</td>
+            <td><label id="dqzt"></label></td>
+        </tr>
+
+        <tr>
+            <th style="background-color:teal">计划时间</th>
+            <th>计划发车时间</th>
+            <td><label id="fcsj"></label></td>
+            <th>计划到达时间</th>
+            <td><label id="ddsj"></label></td>
+        </tr>
+        <tr>
+            <th style="background-color:teal"> 委托人信息</th>
+        </tr>
+
+        <tr>
+            <th> 委托方</th>
+            <th> 委托人</th>
+            <th> 联系电话</th>
+            <th> 提货地址</th>
+            <th> 提货联系人</th>
+            <th> 联系电话</th>
+        </tr>
+        <tr>
+            <td><label id="wtf"></label></td>
+            <td><label id="wtr"></label></td>
+            <td><label id="lxdh"></label></td>
+            <td><label id="thdz"></label></td>
+            <td><label id="thlxr"></label></td>
+            <td><label id="lxxdh"></label></td>
+        </tr>
+
+
+        <tr>
+            <th style="background-color:teal">收货人信息</th>
+        </tr>
+
+        <tr>
+            <th> 收货方</th>
+            <th> 收货人</th>
+            <th> 联系电话</th>
+            <th> 收货地址</th>
+            <th>总数量</th>
+            <th>总重量</th>
+        </tr>
+        <tr>
+            <td><label id="shf"></label></td>
+            <td><label id="shr"></label></td>
+            <td><label id="lxdhh"></label></td>
+            <td><label id="shdz"></label></td>
+            <td><label id="zsl"></label></td>
+            <td><label id="zzl"></label></td>
+        </tr>
+
+
+        <tr>
+            <th style="background-color:teal">实际货物信息</th>
+            <th>货名</th>
+            <td><label id="hmm"></label></td>
+            <th>规格型号</th>
+            <td><label id="ggxhh"></label></td>
+            <th>总数量</th>
+            <td><label id="zsll"></label></td>
+        </tr>
+
+
+
+        <tr>
+            <th style="background-color:teal">货物信息</th>
+            <th>货名</th>
+            <td><label id="hm"></label></td>
+            <th>规格型号</th>
+            <td><label id="ggxh"></label></td>
+            <th>总重量</th>
+            <td><label id="zhll"></label></td>
+        </tr>
+ 
+        <tr>
+            <th style="background-color:teal">回单照片</th>
+            <th style="background-color:teal">订单备注</th>
+        </tr>
+        <tr>
+            <td><label id="hdzp" style="height:80px"></label></td>
+            <td><label id="bz"></label></td>
+        </tr>
+
+
+
+
+
+
+    </thead>
+    <tbody id="tb">
+    </tbody>
+</table>
+<td colspan="2"><input type="button" class="layui-btn" value="确认" onclick="qr()" /></td>
+<td colspan="2" style="float:right"><input type="button" class="layui-btn" value="取消" onclick="qx()" /></td>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<table class="table table-bordered">
+</table>
+<script>
+    var id = this.location.search.split("=")[1];
+    $(function () {
+        FTtt();
+    });
+    //反填
+    function FTtt() {
+        $.ajax(
+            {
+                url: 'http://localhost:57030/api/Inquiry/HD?id=' + id,
+                type: 'get',
+                dataType: 'json',
+                success: function (d) {
+                    $("#ddh").text(d[0].if_Number);
+                    if (d[0].a_State == 0) {
+                        $("#dqzt").text("待确认");
+                    }
+                    if (d[0].if_State == 1) {
+                        $("#dqzt").text("已确认");
+                    }
+                    $("#fcsj").text(d[0].if_PlanBCarTime);
+                    $("#ddsj").text(d[0].if_PlanArrivalTime);
+                    $("#hm").text(d[0].if_Goods);
+                    $("#zzl").text(d[0].if_AllWeight);
+                    $("#ggxh").text(d[0].if_Specification);
+                    $("#zsl").text(d[0].if_Num);
+                    $("#bz").text(d[0].if_Remark);
+                    $("#wtf").text(d[0].e_Company);
+                    $("#wtr").text(d[0].e_Person);
+                    $("#lxdh").text(d[0].e_Phone);
+                    $("#thdz").text(d[0].e_Address);
+                    $("#thlxr").text(d[0].e_AddPerson);
+                    $("#lxxdh").text(d[0].e_AddPhone);
+                    $("#shf").text(d[0].co_Company);
+                    $("#shr").text(d[0].co_Person);
+                    $("#lxdhh").text(d[0].co_Phone);
+                    $("#shdz").text(d[0].co_Address);
+                    $("#hdzp").text(d[0].a_Picture);
+                    $("#hmm").text(d[0].r_Article);
+                    $("#zsll").text(d[0].r_Number);
+                    $("#ggxhh").text(d[0].r_Spec);
+                    $("#zhll").text(d[0].r_Weight)
+                }
+            }
+        )
+
+    }
+    function qr()
+    {
+        $.ajax(
+            {
+                url: 'http://localhost:57030/api/Inquiry/rk?id=' + id,
+                type: 'get',             
+                dataType: 'json',
+                success: function (d) {
+                    if (d > 0)
+                    {
+                        alert('确认成功');
+                        location.href = '/Inquiry/cg1';
+                    }
+                }
+            }
+             )
+    
+    }
+
+    //取消
+    function qx()
+    {
+        location.href = '/Inquiry/cg1';
+    }
+</script>
