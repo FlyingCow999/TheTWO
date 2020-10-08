@@ -6,6 +6,9 @@
 <script src="~/js/vue.min.js"></script>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<link href="~/ElementUI/element-ui.css" rel="stylesheet" />
+<script src="~/ElementUI/element-ui.js"></script>
+<script src="~/ElementUI/Index.js"></script>
 <h2>询价单管理-审核询价单</h2>
 <div id="Xq">
     <div v-for="info in infos">
@@ -55,10 +58,13 @@
         <h2>备注</h2>
         <div>{{info.if_Remark}}</div>
         <table class="table table-bordered">
+
             <tr>
-                <td><input value="审核" type="button" v-on:click="ShenHe(info.if_Id)" /></td>
-                <td><input value="拒绝" type="button" v-on:click="Refuse(info.if_Id)" /></td>
-                <td><input value="返回" type="button" v-on:click="location.href='/Inquiry_M/Index'" /></td>
+
+
+                <td><el-button type="primary" v-on:click="ShenHe(info.if_Id)">审核</el-button></td>
+                <td><el-button type="danger" v-on:click="Refuse(info.if_Id)">拒绝</el-button></td>
+                <td><el-button type="info" v-on:click="location.href='/Inquiry_M/Index'">返回</el-button></td>
             </tr>
         </table>
         <table class="table table-bordered">
@@ -113,7 +119,7 @@
                     }
                 })
             },
-           
+
 
 
         }
