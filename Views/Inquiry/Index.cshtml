@@ -43,14 +43,14 @@
                 <th>{{item.if_EndPlace}}</th>
                 <th>{{item.if_Goods}}</th>
                 <th>{{item.if_AllWeight}}</th>
-                <th>{{item.co_State==1?"已处理":"待处理"}}</th>
+                <th>{{item.dis_State==1?"已处理":"待处理"}}</th>
             </tr>
         </tbody>
     </table>
     <table class="table table-bordered">
         <tr>
             <td>
-                <button v-on:click="firt()">首页</button>
+                <button v-on:click="first()">首页</button>
                 <button v-on:click="pre()">上一页</button>
                 <button v-on:click="next()">下一页</button>
                 <button v-on:click="last()">尾页</button>

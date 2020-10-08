@@ -222,14 +222,14 @@
             show: function () {
                 axios({
                     method: "get",
-                    //url: "http://localhost:57030/api/YunShu/yjhwxx?djgl=" + "K-001",
-                    url: "http://localhost:57030/api/YunShu/yjhwxx?djgl=" + "@ViewBag.name",
+                    url: "http://localhost:57030/api/YunShu/yjhwx?djgl=" + "K-001",
+                    @*url: "http://localhost:57030/api/YunShu/yjhwx?djgl=" + "@ViewBag.name",*@
                 }).then((data => (this.emps = data.data)))
             },
             addMenu: function () {
                 var time = "@DateTime.Now.ToString("yyyy-MM-dd")";
                 var obj = {
-                    r_Order: this.r_Order,
+                    r_Order: parseInt (this.r_Order),
                     r_Article: this.r_Article,
                     r_Spec: this.r_Spec,
                     r_Number: parseInt(this.r_Number),
@@ -244,6 +244,7 @@
                     })
                     .then(function (response) {
                         if (response.data > 0) {
+                            //this.$options.memethods.add();
                             this.add();
                             alert("添加成功");
                         }
@@ -299,8 +300,7 @@
                     .catch(function (error) {
                         console.log(error);
                     });
-            }
-            ,
+            },
             fileClick() {
                 document.getElementById("inpu").click();
             },

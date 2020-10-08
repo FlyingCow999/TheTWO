@@ -45,7 +45,7 @@
     <table class="table table-bordered">
         <tr>
             <td>
-                <button v-on:click="firt()">首页</button>
+                <button v-on:click="first()">首页</button>
                 <button v-on:click="pre()">上一页</button>
                 <button v-on:click="next()">下一页</button>
                 <button v-on:click="last()">尾页</button>
@@ -86,9 +86,9 @@
                 let sb = $("#sb").val();
                 axios({
                     method: "get",
-                    url: "http://localhost:57030/api/Anomaly/AbnormalList?ddh=" + ddh + "&sb=" + sb
+                    url: "http://localhost:57030/api/Anomaly/AbnormalList?ddh=" + ddh + "&sb=" + sb + "&pageIndex=" + this.pageIndex
                 }).then(res => {
-                    this.bodys = res.data;
+                    this.bodys = res.data.avm;
                     this.TotalPage = res.data.totalPage;
                 })
             },

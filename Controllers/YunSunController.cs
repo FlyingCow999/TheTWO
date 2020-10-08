@@ -21,11 +21,7 @@ namespace Flying_Cow_TMSMVC.Controllers
             ViewBag.eid = eid;
             return View();
         }
-        //上传提货单
-        public IActionResult Add()
-        {
-            return View();
-        }
+        
         //上传提货单
         public IActionResult dcthd(string id)
         {
