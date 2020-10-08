@@ -1,0 +1,47 @@
+﻿
+@{
+    ViewData["Title"] = "Login1";
+}
+
+<link href="~/html/css/font-awesome.css" rel="stylesheet" />
+<link href="~/html/css/style.css" rel="stylesheet" />
+<div id="container">
+    <div id="output">
+        <div class="containerT">
+            <form class="form" id="entry_form">
+                <input type="text" placeholder="用户名" id="entry_name" value="admin">
+                <input type="password" placeholder="密码" id="entry_password">
+                <button type="button" id="entry_btn" onclick=" Login()">登录</button>
+                <div id="prompt" class="prompt"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        Victor("container", "output");   //登陆背景函数
+        $("#entry_name").focus();
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                $("#entry_btn").click();
+            }
+        });
+    });
+    function Login() {
+        var name = $("#entry_name").val();
+        var mm = $("#entry_password").val();
+        $.ajax({
+            url: 'http://localhost:57030/api/Login/Get?name=' + name + "&mm=" + mm,
+            type: 'get',
+            success: function (d) {
+                if (d > 0) {
+                    
+                    location.href = '/UserAdd/ShouIndex?name=' + name;
+                }
+                else {
+                    alert('账号或密码错误');
+                }
+            }
+        })
+    }
+</script>

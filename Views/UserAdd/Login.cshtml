@@ -1,0 +1,69 @@
+﻿
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>Login</h1>
+<!DOCTYPE html>
+
+<link href="~/css/style.css" rel="stylesheet" />
+<script src="~/js/jquery.min.js"></script>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-  type" content="text/html;charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>TMS运输管理系统</title>
+    <link href="~/css/style.css" rel="stylesheet" />
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/vector.js"></script>
+</head>
+<body>
+    <div id="container">
+        <div id="output">
+            <div class="containerT">
+                <form class="form" id="entry_form">
+                    <input type="text" placeholder="用户名" id="entry_name" value="admin">
+                    <input type="password" placeholder="密码" id="entry_password">
+                    <button type="button" id="entry_btn" onclick=" Login()">登录</button>
+                    <div id="prompt" class="prompt"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @section scripts
+    {
+        <script type="text/javascript">
+            $(function () {
+                Victor("container", "output");   //登陆背景函数
+                $("#entry_name").focus();
+                $(document).keydown(function (event) {
+                    if (event.keyCode == 13) {
+                        $("#entry_btn").click();
+                    }
+                });
+            });
+            function Login() {
+                var obj = {};
+                obj. name = $("#user_Name").val();
+                obj. mm = $("#user_PassWord").val();
+                //seccionStorage.setItem("name", name);
+                $.ajax({
+                    url: 'http://localhost:57030/api/Login/Get?name' + name + "&mm=" + mm,
+                    type: 'get',
+                    data: obj,
+                    success: function (d) {
+                        if (d > 0) {
+                            alert('登录成功');
+                            location.href = '/UserAdd/ShouIndex?name=' + name;
+                        }
+                        else {
+                            alert('账号或密码错误');
+                        }
+                    }
+                })
+            }
+        </script>
+}
+</body>
+</html>

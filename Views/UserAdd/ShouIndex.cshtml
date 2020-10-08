@@ -1,0 +1,366 @@
+﻿@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TMS物流</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=10, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="../layuiadmin/layui/layui.js"></script>
+    <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+
+    <script>
+        /^http(s*):\/\//.test(location.href) || alert('请先部署到 localhost 下再访问');
+    </script>
+</head>
+<body class="layui-layout-body">
+
+    <div id="LAY_app">
+        <div class="layui-layout layui-layout-admin">
+            <div class="layui-header layui-row">
+                <!-- 头部区域 -->
+                <ul class="layui-nav layui-layout-left">
+                    <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                        <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                            <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                        </a>
+                    </li>
+
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                            <i class="layui-icon layui-icon-refresh-3"></i>
+                        </a>
+                    </li>
+
+                </ul>
+                <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" layadmin-event="theme">
+                            <i class="layui-icon layui-icon-theme"></i>
+                        </a>
+                    </li>
+
+                    <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                        <a href="javascript:;" layadmin-event="fullscreen">
+                            <i class="layui-icon layui-icon-screen-full"></i>
+                        </a>
+                    </li>
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;">
+                            <input type="hidden" value="@ViewBag.ss" id="aa" />
+                            <cite><span id="user_name"></span></cite>
+                        </a>
+                        <dl class="layui-nav-child">
+                            <dd style="text-align: center;"><a href="/UserAdd/Login1">退出</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item " lay-unselect>
+                        <div id="test" class="layui-bg-black"></div>
+                    </li>
+                    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
+                        <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 侧边菜单 -->
+            <div class="layui-side layui-side-menu;">
+                <div class="layui-side-scroll">
+                    <div class="layui-logo" lay-href="home/console.html">
+                        <span>飞牛物流</span>
+                    </div>
+                    <ul style="margin-top:49px;width:500px" class="layui-nav layui-nav-tree" lay-shrink="all" lay-filter="layadmin-system-side-menu">
+                        <ul id="side" class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                            @*
+                                    <li data-name="home" class="layui-nav-item ">
+                                    <a href="javascript:;" lay-tips="123" lay-direction="2">
+                                        <i class="layui-icon layui-icon-home"></i>
+                                        <cite>主页</cite>
+                                    </a>
+                                    <dl class="layui-nav-child">
+                                        <dd data-name="console" class="">
+                                            <a lay-href="/Main/back">主页</a>
+                                        </dd>
+                                    </dl>
+                                </li>
+
+                            *@
+
+                        </ul>
+                    </ul>
+                </div>d
+            </div>
+
+
+            <!-- 页面标签 -->
+            <div class="layadmin-pagetabs" id="LAY_app_tabs">
+                <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+                <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+                <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                    <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                        <li class="layui-nav-item" lay-unselect>
+                            <a href="javascript:;"></a>
+                            <dl class="layui-nav-child layui-anim-fadein">
+                                <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                                <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                                <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
+                </div>
+                <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+                    <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                        <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- 主体内容 -->
+            <div class="layui-body" id="LAY_app_body">
+                <div class="layadmin-tabsbody-item layui-show">
+                    <iframe src="" frameborder="0" class="layadmin-iframe"></iframe>
+                </div>
+            </div>
+
+            <!-- 辅助元素，一般用于移动设备下遮罩 -->
+            <div class="layadmin-body-shade" layadmin-event="shade"></div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    $(function () {
+        if (a == null || a == "" || a == undefined) {
+            $("#user_name").html('未登录');
+            window.location.href = '/useradd/login1';
+            return;
+        }
+        else {
+            $("#user_name").html("欢迎您：【" + a + "】");
+        }
+
+
+        Menu();
+    });
+
+
+
+
+
+    var a = $("#aa").val();
+
+
+
+    //父级菜单
+    //function Menu() {
+    //    $.ajax({
+    //        url: 'http://localhost:57030/api/Jction/S?name=' + a,
+    //        type: 'get',
+    //        dataType: 'json',
+    //        contentType: 'application/json;charset=UTF-8',
+    //        success: function (d) {
+    //            for (var i = 0; i < d.length; i++) {
+    //                str += '<li data-name="set" class="layui-nav-item">';
+    //                str += '<a href="javascript:;" lay-tips=' + d[i].juris_MenuName + ' lay-direction="2">';
+    //                str += '<i class="layui-icon layui-icon-set"></i>';
+    //                str += '<cite>' + d[i].juris_MenuName + '</cite></a>';
+    //                str += '<dl id="' + d[i].juris_Id + '" class="layui-nav-child">';
+    //                MenuTwo(d[i].juris_Id);
+    //                str += '</dl></li>';
+    //            }
+    //            $("#side").append(str);
+    //        }
+    //    })
+    //}
+
+
+    
+    function Menu() {
+        $.ajax({
+            url: 'http://localhost:57030/api/Jction/S?name=' + a,
+            type: 'get',
+            async: false,
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            success: function (d) {
+                var str = '';
+                for (var i = 0; i < d.length; i++) {
+                    str += '<li data-name="set" class="layui-nav-item" id="li' + i + '">';
+                    str += '<a href="javascript:;" lay-tips=' + d[i].juris_MenuName + ' lay-direction="2">';
+                    str += '<i class="layui-icon layui-icon-set"></i>';
+                    str += '<cite>' + d[i].juris_MenuName + '</cite></a>';
+                    str += '</li>';
+                    $("#side").append(str);
+                    MenuTwo(d[i].juris_Id, "li" + i);
+                }
+
+            }
+        })
+    }
+    //二级菜单
+    function MenuTwo(juris_Id, li) {
+        $.ajax({
+            url: 'http://localhost:57030/api/Jction/Two?id=' + juris_Id,
+            type: 'get',
+            async: false,
+            dataType: 'json',
+            contentType: 'application/json;charset=UTF-8',
+            success: function (d) {
+                var str = '<dl class="layui-nav-child">';
+                for (var i = 0; i < d.length; i++) {
+                    str += '<dd id="' + juris_Id + '" data-name="console" class="">';
+                    str += '<a href="javascript:;" onclick="FindThree(' + d[i].juris_Id + ')" lay-tips=' + d[i].juris_MenuName + ' lay-direction="2" id="two">';
+                    str += '<i class="layui-icon layui-icon-set" ></i>';
+                    str += '<cite>' + d[i].juris_MenuName + '</cite></a>';
+                    str += '</dd>';
+                    FindThree(d[i].juris_Id);
+                }
+                str += "</dl>";
+                $("#" + li + "").append(str);
+               
+            }
+        })
+    }
+
+
+    function FindThree(juris_id) {
+        $.ajax({
+            url: "http://localhost:57030/api/Jction/TwoDian?id=" + juris_id,
+            type: "get",
+            dataType: "json",
+            async: false,
+            success: function (d) {
+                var str = '<dl class="layui-nav-child" id="two">';
+                for (var i = 0; i < d.length; i++) {
+                    str += '<dd id="' + d[i].juris_Id + '" data-name="console" class="">';
+                    str += '<a href="javascript:;" onclick="FindThree(' + d[i].juris_Id + ')" lay-tips=' + d[i].juris_MenuName + ' lay-direction="2" >';
+                    str += '<i class="layui-icon layui-icon-set" ></i>';
+                    str += '<cite>' + d[i].juris_MenuName + '</cite></a>';
+                    str += '</dd>';
+                }
+                str += "</dl>";
+                $("#two").append(str);
+                //var str = '<dl class="layui-nav-child">';
+                //for (var i = 0; i < d.length; i++) {
+                //    str += '<dd  data-name="console" class="">';
+                //    str += '<a href="javascript:;" onclick="" lay-tips=' + d[i].juris_MenuName + ' lay-direction="2">';
+                //    str += '<i class="layui-icon layui-icon-set"></i>';
+                //    str += '<cite>' + d[i].juris_MenuName + '</cite></a>';
+                //    str += '</dd>';
+                //    console.log(d[i].juris_MenuName);
+                //}
+                //str += "</dl>";
+                //$("#two").append(str);
+            }
+        })
+    }
+
+
+    //function MenuDian(id) {
+    //    $.ajax({
+    //        url: 'http://localhost:57030/api/Jction/TwoDian?id=' + id,
+    //        type: 'get',
+    //        dataType: 'json',
+    //        success: function (d) {
+    //            $("tb").empty()
+    //            $("tb").each(function () {
+
+    //                var str = '<li class="layui-nav-item layui-nav-itemed">';
+    //                str += '<a class="" href="javascript:;" style="color:red">' + this.menu + '</a>';
+    //                MenuTwo(this.juris_id);
+    //                str += '<dl id="' + this.juris_id + '" class="layui-nav-child">';
+    //                str += '</dl>'
+    //                str += "</li>";
+    //                $("#tb").append(str);
+    //            });
+    //        }
+    //    })
+    //}
+    //function toLink(data) {
+    //    switch (data) {
+    //        case 'a01':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a02':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a03':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a04':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a05':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a06':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a07':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a01':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a08':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a09':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a010':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a011':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a012':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a013':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a014':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //        case 'a015':
+    //            document.getElementById("iframe").src = "";
+    //            break;
+    //    }
+    //}
+    //下拉框绑定
+    //function UserRoleBang() {
+    //    $.ajax({
+    //        url: 'http://localhost:57030/api/Jction/RoleLogin?name=' + name,
+    //        type: 'get',
+    //        dataType: 'json',
+    //        success: function (d) {
+    //            $("#user_Name").empty();
+    //            $("#user_Name").append("<option value = '0'> ---切换身份---</option>");
+    //            $(d).each(function () {
+    //                str = "<option value='" + this.role_id + "'>" + this.role_name + "</option>";
+    //                $("#user_Name").append(str);
+    //            });
+    //        }
+    //    });
+    //}
+
+    layui.config({
+        base: '../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use('index');
+</script>
+
+
+
