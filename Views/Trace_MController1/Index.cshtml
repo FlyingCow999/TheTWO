@@ -21,7 +21,6 @@
                 <h3 class="small">
                     <img width="1110" height="160" v-bind:src="item.url" />
                 </h3>
-            </el-carousel-item>
         </el-carousel>
     </div>
     <div style="float:left">
@@ -96,7 +95,10 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">详情页面</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <el-page-header class="close" data-dismiss="modal" aria-label="Close" content="详情页面">
+                        </el-page-header>
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -110,7 +112,7 @@
                             <hr />
                             <h2>运输地址</h2>
                             <table class="table table-bordered">
-                                <tr>
+                                <tr style="background-color: #E4E7ED">
                                     <td>始发地</td>
                                     <td>目的地</td>
                                 </tr>
@@ -121,7 +123,7 @@
                             </table>
                             <h2>计划时间</h2>
                             <table class="table table-bordered">
-                                <tr>
+                                <tr style="background-color: #E4E7ED">
                                     <td>计划装货时间</td>
                                     <td>计划到货时间</td>
                                 </tr>
@@ -133,7 +135,7 @@
                             <hr />
                             <h2>委托人</h2>
                             <table class="table table-bordered">
-                                <tr>
+                                <tr style="background-color: #E4E7ED">
                                     <td>委托方</td>
                                     <td>委托人</td>
                                     <td>联系电话</td>
@@ -148,7 +150,7 @@
                             <hr />
                             <h2>收货人</h2>
                             <table class="table table-bordered">
-                                <tr>
+                                <tr style="background-color: #E4E7ED">
                                     <td>收货方</td>
                                     <td>收货人</td>
                                     <td>联系电话</td>
@@ -163,7 +165,7 @@
                             </table>
                             <h2>货物信息</h2>
                             <table class="table table-bordered">
-                                <tr>
+                                <tr style="background-color: #E4E7ED">
                                     <td>货名</td>
                                     <td>规格型号</td>
                                     <td>总包装</td>
@@ -178,7 +180,7 @@
                                     <td>{{info.if_AllWeight}}</td>
                                 </tr>
                             </table>
-                            <h2>备注</h2>
+                            <h2 style="background-color: #E4E7ED">备注</h2>
                             <div>{{info.if_Remark}}</div>
                             <h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;">{{(info.co_State==0 ?"等待发车":(value.info==1 ?"在途":"到达目的地"))}}</span></h2>
                             <table class="table table-bordered">
@@ -194,18 +196,17 @@
             </div>
         </div>
     </div>
-    <table class="table table-bordered" style="margin-bottom:100px">
-        <tr>
-            <td>
-                <el-button-group>
-                    <el-button type="primary" v-on:click="firt()">首页</el-button>
-                    <el-button type="primary" icon="el-icon-arrow-left" v-on:click="pre()">上一页</el-button>
-                    <el-button type="primary" v-on:click="next()">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-                    <el-button type="primary" v-on:click="last()">尾页</el-button>
-                </el-button-group>
-            </td>
-        </tr>
-    </table>
+    <div class="block">
+        <span class="demonstration">直接前往</span>
+        <el-pagination v-on:size-change="handleSizeChange"
+                       v-on:current-change="handleCurrentChange"
+                       :current-page="pageIndex"
+                       :page-sizes="[7, 14, 21, 28]"
+                       :page-size="7"
+                       layout="total, sizes, prev, pager, next, jumper"
+                       :total=allPage>
+        </el-pagination>
+    </div>
 </div>
 <style>
     .el-carousel__item h3 {
@@ -240,7 +241,8 @@
                 //全局
                 pageIndex: 1,
                 //总页数
-                TotalPage: 0,
+                allPage: 0,
+               
             }
         },
         mounted: function () {
@@ -249,10 +251,20 @@
             this.img();
         },
         methods: {
+
+            handleSizeChange() {
+                console.log(`每页 7 条`);
+            },
+            handleCurrentChange(pageIndex) {
+                console.log(pageIndex)
+                this.pageIndex = pageIndex;
+                this.show(this.pageIndex);
+                console.log(`当前页: ${pageIndex}`);
+            },
             img: function () {
                 axios({
                     method: "get",
-                    url: "http://localhost:57030/api/Trace_M/GetImg",
+                    url: "@ViewBag.url"+"api/Trace_M/GetImg",
                 }).then(response => {
                     this.imginfos = response.data;
                 })
@@ -260,7 +272,7 @@
             xiangqing: function (id) {
                 axios({
                     method: "get",
-                    url: "http://localhost:57030/api/Trace_M/XiangQX?Id=" + id,
+                    url: "@ViewBag.url"+"api/Trace_M/XiangQX?Id=" + id,
                 }).then(response => {
                     this.infos = response.data;
                 })
@@ -277,9 +289,9 @@
                 }
                 axios({
                     method: "get",
-                    url: "http://localhost:57030/api/Trace_M/GetTracePageList?pageIndex=" + pageIndex + "&pageSize=" + 7 + "&if_number=" + this.xjd + "&btime=" + this.xdsj + "&etime=" + this.exdsj,
+                    url: "@ViewBag.url"+"api/Trace_M/GetTracePageList?pageIndex=" + pageIndex + "&pageSize=" + 7 + "&if_number=" + this.xjd + "&btime=" + this.xdsj + "&etime=" + this.exdsj,
                 }).then((response => (this.emps = response.data.getTraceModel, this
-                    .TotalPage = response.data.totalPage)))
+                    .TotalPage = response.data.totalPage, this.allPage = response.data.allPage)))
             },
             //地图跟踪页面跳转
             MapGZ: function () {
