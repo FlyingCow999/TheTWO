@@ -1,0 +1,193 @@
+﻿
+@{
+    ViewData["Title"] = "Show";
+}
+
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>运输状态</title>
+    <script src="~/vue.min.js"></script>
+    <script src="~/axios.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <link href="~/layui-v2.5.6/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/layui-v2.5.6/layui/layui.all.js"></script>
+</head>
+<body>
+    <div id="app">
+        <input type="text" v-model="if_Number" />
+        <button type="button" class="layui-btn" v-on:click="show">查询</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            添加
+        </button>
+        <table class="layui-table" lay-even lay-skin="nob">
+            <thead>
+                <tr>
+                    <td style="width:60px">选择</td>
+                    <td style="width:90px">订单号</td>
+                    <td style="width:90px">委托方</td>
+                    <td>下单时间</td>
+                    <td>计划发车时间</td>
+                    <td>计划到达时间</td>
+                    <td style="width:90px">始发地</td>
+                    <td style="width:90px">目的地</td>
+                    <td style="width:90px">状态</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in emps">
+                    <td><input type="checkbox" name="rd" :id="item.if_Id" :value="item.e_Id" /></td>
+                    <td>{{item.if_Number}}</td>
+                    <td>{{item.e_Company}}</td>
+                    <td>{{item.if_OrderTime}}</td>
+                    <td>{{item.if_PlanBCarTime}}</td>
+                    <td>{{item.if_PlanArrivalTime}}</td>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.if_EndPlace}}</td>
+                    <td>{{item.zt}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div>
+            <table class="layui-table" lay-even lay-skin="nob">
+                <tr>
+                    <td>共有<span id="Zonggongtiaoshu">{{zongtiaoshu}}</span>条数据</td>
+                    <td>共有<span id="Zonggongyeshu">{{zongyeshu}}</span>页</td>
+                    <td>当前是第<span id="Dangpianyeshu" v-model="dangqian">{{dangqianye}}</span>页</td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="First">首页</button></td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="Prv">上页</button></td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="Next">下页</button></td>
+                    <td><button class="layui-btn search_btn" type="submit" v-on:click="Last">尾页</button></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">添加站点</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td><textarea v-model="r_Pass"></textarea>
+                        </tr>
+                    </table>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取 消</button>
+                        <button type="button" class="btn btn-primary" v-on:click="Addshow">提 交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script type="text/javascript">
+        var vueShow = new Vue({
+            el: '#app',
+            data: {
+                emps: "",
+                r_Pass:"",
+                if_Number:"",
+                a_Status:"",
+                dangqianye: 1,
+                pageSize: 8,
+                zongyeshu: 1,
+                zongtiaoshu: 1,
+            },
+            mounted: function () {
+                //显示主体
+                this.show();
+            },
+            methods: {
+                //显示主体
+                show: function () {
+                    var n = this;
+                    var i = n.dangqianye;
+                    var s = n.pageSize;
+                    axios
+                        .get('http://localhost:57030/api/YunShu/Takegoods?name=' + this.if_Number, {
+                            params: {
+                                dangqian: i,
+                                meiyetiaoshu: s,
+                            }
+                        })
+                        .then(function (i) {
+                            n.emps = i.data.xianshi;
+                            n.dangqian = i.data.Dangqianye;
+                            n.zongyeshu = i.data.zongyeshu;
+                            n.zongtiaoshu = i.data.zongtiaoshu;
+                        })
+                },
+                Addshow: function () {
+                    var arr = document.getElementsByName("rd");
+                    for (var i = 0; i < arr.length; i++) {
+                        if (arr[i].checked) {
+                            var id = arr[i].id;
+                        }
+                    }
+                    var time = "@DateTime.Now.ToString("yyyy-MM-dd")";
+                    var obj = {
+                        r_Pass: this.r_Pass,
+                        r_Time: time,
+                        ifid: parseInt(id)
+                    };
+                    axios.post('http://localhost:57030/api/YunShu/AddR', JSON.stringify(obj),
+                    {
+                        headers: {
+                            'Content-Type': "application/json;charset=UTF-8"
+                        }
+                    })
+                    .then(function (response) {
+                        if (response.data > 0) {
+                            this.add();
+                            alert("添加成功");
+                        }
+                        else {
+                            alert("添加失败");
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+                },
+                //分页按钮点击事件
+                //首页
+                First: function () {
+                    this.dangqianye = 1;
+                    this.show();
+                },
+                //上一页
+                Prv: function () {
+                    this.dangqianye--;
+                    if (this.dangqianye < 1) {
+                        this.dangqianye = 1;
+                    }
+                    this.show();
+                },
+                //下一页
+                Next: function () {
+                    this.dangqianye++;
+                    if (this.dangqianye > this.Zongyeshu) {
+                        this.dangqianye--;
+                    }
+                    this.show();
+                },
+                //尾页
+                Last: function () {
+                    this.dangqianye = this.zongyeshu;
+                    this.show();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

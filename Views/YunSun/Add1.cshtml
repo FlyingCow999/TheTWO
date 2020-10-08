@@ -1,0 +1,447 @@
+﻿
+@{
+    ViewData["Title"] = "Add";
+}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/vue.min.js"></script>
+    <script src="~/axios.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    <h3>运输执行-发车处理</h3>
+    <div id="app">
+        <div v-for="item in emps">
+            <h5>应交货物信息</h5>
+            <table class="table table-bordered">
+                <tr>
+                    <td>订单号</td>
+                    <td>始发地</td>
+                    <td>目的地</td>
+                    <td>委托方</td>
+                    <td>委托人</td>
+                    <td>联系电话</td>
+                    <td>详细地址</td>
+                    <td>收货方</td>
+                    <td>收货人</td>
+                    <td>联系电话</td>
+                    <td>收货地址</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_Number}}</td>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.if_EndPlace}}</td>
+                    <td>{{item.e_Company}}</td>
+                    <td>{{item.e_Person}}</td>
+                    <td>{{item.e_Phone}}</td>
+                    <td>{{item.if_BeginPlace}}</td>
+                    <td>{{item.co_Company}}</td>
+                    <td>{{item.co_Person}}</td>
+                    <td>{{item.co_Phone}}</td>
+                    <td>{{item.co_Address}}</td>
+                </tr>
+            </table>
+            <table class="table table-bordered">
+                <tr>
+                    <td>货名</td>
+                    <td>规格型号</td>
+                    <td>总包装</td>
+                    <td>总数量</td>
+                    <td>总重量</td>
+                    <td>提货联系人</td>
+                    <td>联系电话</td>
+                    <td>提货地址</td>
+                    <td>订单备注</td>
+                </tr>
+                <tr>
+                    <td>{{item.if_Goods}}</td>
+                    <td>{{item.if_Specification}}</td>
+                    <td>{{item.if_TotalPackage}}</td>
+                    <td>{{item.if_Num}}</td>
+                    <td>{{item.if_AllWeight}}</td>
+                    <td>{{item.e_AddPerson}}</td>
+                    <td>{{item.e_Phone}}</td>
+                    <td>{{item.e_Address}}</td>
+                    <td>{{item.if_Remark}}</td>
+                </tr>
+            </table>
+            @**********************************************************************@
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>订单号</td>
+                        <td>货名</td>
+                        <td>规格型号</td>
+                        <td>数量</td>
+                        <td>重量</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" v-model="r_Order" /></td>
+                        <td><input type="text" v-model="r_Article" /></td>
+                        <td><input type="text" v-model="r_Spec" /></td>
+                        <td><input type="text" v-model="r_Number" /></td>
+                        <td><input type="text" v-model="r_Weight" /></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td>签收人</td>
+                        @*<td>签收时间</td>*@
+                        <td>签收状态</td>
+                        <td>异常</td>
+                        @*<td>异常说明</td>*@
+                        <td>备注</td>
+                        @*<td>图片</td>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" v-model="a_Signer" /></td>
+
+                        @*<td><input type="text" v-model="a_Signing" /></td>*@
+
+                        <td>
+                            <select v-model="a_Status">
+                                <option v-for="x in shuju" id="status" :value="x.id">{{x.name}}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="radio" name="a_Abnormal" :id="0" />正常
+                            <input type="radio" name="a_Abnormal" :id="1" data-toggle="modal" data-target="#exampleModal" />异常
+                        </td>
+
+                        @*<td><input type="text" v-model="a_Explain" /></td>*@
+                        <td><input type="text" v-model="a_Remarks" /></td>
+                        @*<td>
+                                <input type="text" v-model="a_Picture" />
+                            </td>*@
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">异常说明</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <table class="table table-bordered">
+                        <tr>
+                            <td>
+                                <textarea v-model="a_Explain"></textarea>
+                                @*<input type="text" v-model="r_Pass" /></td>*@
+                        </tr>
+                    </table>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取 消</button>
+                        <button type="button" class="btn btn-primary" v-on:click="add">提 交</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="img_box">
+            <div class="img_size"
+                 v-for="(item,index) of imgList"
+                 :key="index"
+                 v-show="imgList.length!=0">
+                <img v-if="item.file.type.indexOf('image') !== -1" :src="item.file.src">
+                <div class="remove_logo" v-on:click="fileDel"><span style="cursor:pointer">×</span></div>
+            </div>
+            <div class="add_img" v-on:click="fileClick">
+                <span style="cursor:pointer;">+</span>
+            </div>
+            <div v-on:click="uploadImage">
+            </div>
+            <input id="inpu"
+                   name="files"
+                   style="display: none;"
+                   v-on:change="fileChange($event)"
+                   type="file"
+                   ref="file"
+                   accept="image/*">
+        </div>
+
+
+        <input type="button" v-on:click="add" value="添加" />
+    </div>
+
+
+
+</body>
+</html>
+
+<script type="text/javascript">
+    var Show = new Vue({
+        el: '#app',
+        data() {
+            return {
+                emps: "",
+                r_Order: "",
+                r_Article: "",
+                r_Spec: "",
+                r_Number:"" ,
+                r_Weight: "",
+                a_Signer: "",
+                //a_Signing:"",
+                a_Status: "",
+                a_Abnormal: "",
+                //a_Picture: "",
+                a_Explain: "",
+                a_Remarks:"",
+                shuju: [
+                    { id: 1,name: "到达完好" },
+                    { id: 2,name: "迟到完好" },
+                    { id: 3,name: "及时异常" }
+                ],
+                imgList: [],
+                addState: "",
+                imgt:[]
+            }
+        },
+        mounted: function () {
+            //显示主体
+            this.show();
+        },
+        methods: {
+            //显示主体
+            show: function () {
+                axios({
+                    method: "get",
+                    //url: "http://localhost:57030/api/YunShu/yjhwxx?djgl=" + "K-001",
+                    url: "http://localhost:57030/api/YunShu/yjhwxx?djgl=" + "@ViewBag.name",
+                }).then((data => (this.emps = data.data)))
+            },
+            addMenu: function () {
+                var time = "@DateTime.Now.ToString("yyyy-MM-dd")";
+                var obj = {
+                    r_Order: this.r_Order,
+                    r_Article: this.r_Article,
+                    r_Spec: this.r_Spec,
+                    r_Number: parseInt(this.r_Number),
+                    r_Weight: parseInt(this.r_Weight)
+                };
+
+                axios.post('http://localhost:57030/api/YunShu/Add', JSON.stringify(obj),
+                    {
+                        headers: {
+                            'Content-Type': "application/json;charset=UTF-8"
+                        }
+                    })
+                    .then(function (response) {
+                        if (response.data > 0) {
+                            this.add();
+                            alert("添加成功");
+                        }
+                        else {
+                            alert("添加失败");
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            add: function () {
+                var arr = document.getElementsByName("a_Abnormal");
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i].checked) {
+                        var id = arr[i].id;
+                    }
+                }
+
+                var arrList = new Array();
+                for (var i = 0; i < this.imgt.length; i++) {
+                    //arrList.push(this.imgt[i].id);
+                    var td = this.imgt[i].id;
+                }
+                var ar = $("#status").val();
+                var time = "@DateTime.Now.ToString("yyyy-MM-dd")";
+                var obj = {
+                    a_Signer: this.a_Signer,
+                    a_Signing: time,
+                    a_Status: parseInt(ar),
+                    a_Abnormal: parseInt(id),
+                    a_Picture: td,
+                    a_Explain: this.a_Explain,
+                    a_Remarks: this.a_Remarks,
+                    a_State: parseInt(0),
+                    receiptid: parseInt(this.r_Order),
+                    ifid: parseInt(1)
+                };
+                axios.post('http://localhost:57030/api/YunShu/Abnormal', JSON.stringify(obj),
+                    {
+                        headers: {
+                            'Content-Type': "application/json;charset=UTF-8"
+                        }
+                    })
+                    .then(function (response) {
+                        if (response.data > 0) {
+                            alert("添加成功");
+                        }
+                        else {
+                            alert("添加失败");
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+            ,
+            fileClick() {
+                document.getElementById("inpu").click();
+            },
+            fileChange(el) {
+                const list = this.$refs.file.files;
+                if (!el.target.files[0].size) return;
+                this.fileList(el.target);
+                el.target.value = "";
+            },
+            fileList(fileList) {
+                let files = fileList.files;
+                for (let i = 0; i < files.length; i++) {
+                    //判断是否为文件夹
+                    if (files[i].type != "") {
+                        this.fileAdd(files[i]);
+                    } else {
+                        //文件夹处理
+                        this.folders(fileList.items[i]);
+                    }
+                }
+            },
+            //文件夹处理
+            folders(files) {
+                let _this = this;
+                //判断是否为原生file
+                if (files.kind) {
+                    files = files.webkitGetAsEntry();
+                }
+                files.createReader().readEntries(function (file) {
+                    for (let i = 0; i < file.length; i++) {
+                        if (file[i].isFile) {
+                            _this.foldersAdd(file[i]);
+                        } else {
+                            _this.folders(file[i]);
+                        }
+                    }
+                });
+            },
+            foldersAdd(entry) {
+                let _this = this;
+                entry.file(function (file) {
+                    _this.fileAdd(file);
+                });
+            },
+            fileAdd(file) {
+                //总大小
+                this.size = this.size + file.size;
+                let reader = new FileReader();
+                reader.vue = this;
+                reader.readAsDataURL(file);
+                reader.onload = function () {
+                    file.src = this.result;
+
+                    var id = this.result;
+
+                    this.vue.imgList.push({
+                        file
+                    });
+
+                    this.vue.imgt.push({
+                        id
+                    })
+                };
+            },
+            fileDel(index) {
+                this.imgList.splice(index, 1);
+            },
+            bytesToSize(bytes) {
+                if (bytes === 0) return "0 B";
+                let k = 1000, // or 1024
+                    sizes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+                    i = Math.floor(Math.log(bytes) / Math.log(k));
+                return (bytes / Math.pow(k, i)).toPrecision(3) + " " + sizes[i];
+            },
+            uploadImage: function () {
+                var form = document.forms.namedItem("fileinfo");
+                var formData = new FormData(form);
+                for (var i = 0; i < this.imgList.length; i++) {
+                    formData.append("file" + [i + 1], this.imgList[i].file);
+                    console.log(this.imgList);
+                }
+
+            }
+
+
+        }
+    });
+</script>
+
+<style scoped lang="less">
+    .img_box {
+        width: 100%;
+        padding: 0 2%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .img_size {
+        position: relative;
+        width: 175px /*1.8rem*/;
+        height: 200px /*1.65rem*/;
+        padding: 5px;
+    }
+
+    img {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+    }
+
+    .remove_logo {
+        position: absolute;
+        width: 2.4rem;
+        height: 2.4rem;
+        /* background: red;*/
+        border-radius: 10px;
+        top: 5px;
+        right: 5px;
+        text-align: center;
+        line-height: 2.4rem;
+        font-size: 2.5rem;
+        color: #777777;
+    }
+
+    .add_img {
+        width: 175px /*1.3rem*/;
+        height: 200px /*1.3rem*/;
+        margin-top: 5px;
+        /*text-align: center;*/
+        line-height: 1.3rem;
+        font-size: 150px;
+        color: #777777;
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+</style>
+
+
+
+

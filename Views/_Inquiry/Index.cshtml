@@ -149,11 +149,10 @@
         var table = layui.table;
         table.render({
             elem: '#test'
-            , url: 'http://localhost:57030/api/Inquiry/Getlist'
+            , url: 'http://localhost:57030/api/_Inquiry/Getlist'
             , toolbar: '#toolbarDemo'//打印 导出
             , cols: [[
                 { type: 'checkbox' }
-                , { field: 'if_Id', title: 'ID', sort: true }
                 , { field: 'if_Number', title: '询价号' }
                 , { field: 'if_OrderTime', title: '下单时间' }
                 , { field: 'if_PlanBCarTime', title: '计划发车时间' }
@@ -180,7 +179,7 @@
             , id: "reloadpp"
             , page: true
             , limit: 5
-            , limits: ['20', '30']
+            , limits: ['5']
         });
         $("#reold").on('click', function () {
             //执行重载 查询状态
@@ -250,7 +249,7 @@
 
         $.ajax(
             {
-                url: 'http://localhost:57030/api/Inquiry/aff',
+                url: 'http://localhost:57030/api/_Inquiry/aff',
                 data: JSON.stringify(obj),
                 type: 'post',
                 dataType: 'json',

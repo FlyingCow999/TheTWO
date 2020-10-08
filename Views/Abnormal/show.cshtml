@@ -47,6 +47,16 @@
             </tr>
         </tbody>
     </table>
+    <table class="table table-bordered">
+        <tr>
+            <td>
+                <button v-on:click="firt()">首页</button>
+                <button v-on:click="pre()">上一页</button>
+                <button v-on:click="next()">下一页</button>
+                <button v-on:click="last()">尾页</button>
+            </td>
+        </tr>
+    </table>
     <button></button>
 </div>
 <script>
@@ -55,6 +65,10 @@
         dialogVisible: false,
         header: ["订单号", "下单时间", "委托方", "联系人", "委托人电话", "始发地", "目的地", "车牌", "回单上传时间", "回单确认时间", "客户回单确认状态"],
         bodys: "",
+        //全局
+        pageIndex: 1,
+        //总页数
+        TotalPage: 0,
         obj: {
             if_id: "",
             if_Number: "",
@@ -85,11 +99,38 @@
                     url: "http://localhost:57030/api/Abnormal/GetAbnormalList?ddh=" + ddh + "&sb=" + sb
                 }).then(res => {
                     this.bodys = res.data;
+                    this.TotalPage = res.data.totalPage;
                 })
             },
             select: function () {
                 let id = $(".ckitem:checked").val();
                 location.href = "http://localhost:52767/Abnormal/detail?id=" + id;
+            },
+            first: function () {
+                this.show(1);
+            },
+            pre: function () {
+                if (this.pageIndex > 1) {
+                    this.pageIndex--;
+                    this.show(this.pageIndex);
+                }
+                else {
+                    alert('已经是第一页');
+                    this.show(1);
+                }
+            },
+            next: function () {
+                if (this.pageIndex < this.TotalPage) {
+                    this.pageIndex++;
+                    this.show(this.pageIndex);
+                }
+                else {
+                    alert('已经是最后一页');
+                    this.show(this.TotalPage);
+                }
+            },
+            last: function () {
+                this.show(this.TotalPage);
             }
         }
     })
