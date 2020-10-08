@@ -54,7 +54,7 @@ namespace Flying_Cow_TMSMVC.Controllers
         {
             return View();
         }
-        public IActionResult Add1(string name)
+        public IActionResult Add(string name)
         {
             ViewBag.name = name;
             return View();
